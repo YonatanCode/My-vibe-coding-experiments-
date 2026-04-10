@@ -1,0 +1,268 @@
+:root {
+  --page-background: #f6f1eb;
+  --card-background: #ffffff;
+  --card-border: #dedee0;
+  --text-primary: #000000;
+  --text-secondary: #58626e;
+  --sale: #c83317;
+  --new-tag-background: #ecf8ea;
+  --new-tag-text: #007e11;
+  --checkbox-border: #8d96a0;
+  --shadow: 0 18px 40px rgba(31, 36, 41, 0.08);
+  --radius: 8px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, #fffefb 0, #fffefb 12rem, transparent 12rem),
+    linear-gradient(180deg, #fbf6f0 0%, #f0ebe4 100%);
+  color: var(--text-primary);
+  font-family: "Open Sans", sans-serif;
+}
+
+.page-shell {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 16px;
+}
+
+.product-card {
+  background: var(--card-background);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+  width: min(100%, 426px);
+}
+
+.card-badge {
+  align-items: center;
+  display: inline-flex;
+  font-family: "Overpass", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  left: 11px;
+  letter-spacing: 0;
+  line-height: 16px;
+  min-height: 24px;
+  padding: 4px 8px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 11px;
+  z-index: 1;
+}
+
+.card-badge--new {
+  background: var(--new-tag-background);
+  color: var(--new-tag-text);
+}
+
+.award-badge {
+  position: absolute;
+  right: -1px;
+  top: -1px;
+  width: 72px;
+}
+
+.award-badge img {
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.product-media {
+  align-items: center;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  min-height: 335px;
+  overflow: hidden;
+  padding: 32px 8px 23px;
+}
+
+.product-image {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  transform: translateX(-2px);
+  width: 403px;
+}
+
+.card-top-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px 8px;
+}
+
+.swatches {
+  display: flex;
+  gap: 16px;
+}
+
+.swatch {
+  appearance: none;
+  background: var(--swatch-fill);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  cursor: pointer;
+  display: block;
+  flex: 0 0 auto;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  width: 18px;
+}
+
+.swatch.is-selected::after {
+  border: 1.5px solid #000;
+  border-radius: 999px;
+  content: "";
+  inset: -4px;
+  position: absolute;
+}
+
+.swatch:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 4px;
+}
+
+.compare-toggle {
+  align-items: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 14px;
+  gap: 4px;
+  line-height: 20px;
+}
+
+.compare-toggle input {
+  appearance: none;
+  margin: 0;
+  position: absolute;
+}
+
+.checkbox-ui {
+  border: 1px solid var(--checkbox-border);
+  display: inline-block;
+  height: 18px;
+  position: relative;
+  width: 18px;
+}
+
+.compare-toggle input:focus-visible + .checkbox-ui {
+  outline: 2px solid #000;
+  outline-offset: 3px;
+}
+
+.compare-toggle input:checked + .checkbox-ui::after {
+  border-bottom: 2px solid #000;
+  border-right: 2px solid #000;
+  content: "";
+  height: 10px;
+  left: 5px;
+  position: absolute;
+  top: 1px;
+  transform: rotate(40deg);
+  width: 5px;
+}
+
+.card-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 8px 16px 16px;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.product-title {
+  font-family: "Overpass", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 0 0 4px;
+}
+
+.product-description,
+.finance-copy,
+.disclaimer {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+
+.pricing {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.sale-price,
+.list-price {
+  font-family: "Overpass", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.sale-price {
+  color: var(--sale);
+}
+
+.list-price {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.finance-copy {
+  margin-top: 0;
+}
+
+@media (max-width: 480px) {
+  .page-shell {
+    padding: 0;
+  }
+
+  .product-card {
+    border-radius: 0;
+    width: 100%;
+  }
+
+  .product-media {
+    min-height: auto;
+    padding-top: 40px;
+  }
+
+  .product-image {
+    width: min(100%, 403px);
+  }
+}
