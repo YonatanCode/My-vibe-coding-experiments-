@@ -403,6 +403,17 @@ function positionCompareTooltip(toggle) {
   toggle.style.setProperty('--tooltip-shift', `${Math.round(shift)}px`);
 }
 
+function showDisabledCompareTooltip(toggle) {
+  row.querySelectorAll('.compare-toggle.show-tooltip').forEach((entry) => {
+    if (entry !== toggle) {
+      entry.classList.remove('show-tooltip');
+    }
+  });
+
+  toggle.classList.add('show-tooltip');
+  positionCompareTooltip(toggle);
+}
+
 row.addEventListener('change', (event) => {
   if (event.target.matches('input[name="compare"]')) {
     updateCompareAvailability();
@@ -438,21 +449,25 @@ row.addEventListener('click', (event) => {
 
   event.preventDefault();
   event.stopPropagation();
-
-  row.querySelectorAll('.compare-toggle.show-tooltip').forEach((toggle) => {
-    if (toggle !== disabledToggle) {
-      toggle.classList.remove('show-tooltip');
-    }
-  });
-
-  disabledToggle.classList.add('show-tooltip');
-  positionCompareTooltip(disabledToggle);
+  showDisabledCompareTooltip(disabledToggle);
 });
 
 row.addEventListener('touchstart', (event) => {
   if (event.target.closest('.compare-toggle.is-disabled')) {
     event.preventDefault();
   }
+}, { passive: false });
+
+row.addEventListener('touchend', (event) => {
+  const disabledToggle = event.target.closest('.compare-toggle.is-disabled');
+
+  if (!disabledToggle) {
+    return;
+  }
+
+  event.preventDefault();
+  event.stopPropagation();
+  showDisabledCompareTooltip(disabledToggle);
 }, { passive: false });
 
 row.addEventListener('mouseleave', (event) => {
