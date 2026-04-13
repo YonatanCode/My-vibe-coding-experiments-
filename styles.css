@@ -1,18 +1,50 @@
 :root {
-  --page-bg: #ffffff;
-  --card-bg: #ffffff;
-  --card-border: #dedee0;
-  --card-border-hover: #bcbcbc;
-  --text-primary: #000000;
-  --text-secondary: #58626e;
-  --price-sale: #c83317;
-  --tag-bg: #ecf8ea;
-  --tag-text: #007e11;
-  --tag-sale-bg: #f9ebe8;
-  --tag-sale-text: #c83317;
-  --tag-neutral-bg: #dee0e3;
-  --tag-neutral-text: #58626e;
-  --radius: 8px;
+  --General-XXS: 4px;
+  --General-XS: 8px;
+  --General-S: 12px;
+  --General-SM: 16px;
+  --General-ML: 32px;
+
+  --Spacing-General-XS: var(--General-XS);
+  --Spacing-General-S: var(--General-S);
+  --Spacing-General-SM: var(--General-SM);
+  --Spacing-General-ML: var(--General-ML);
+
+  --Giant-Black: #000000;
+  --Giant-Red: #c83317;
+  --Giant-White: #ffffff;
+  --Giant-Grey-10: #dedee0;
+  --Giant-Grey-30: #bcbcbc;
+  --Giant-Grey-60: #58626e;
+
+  --Tint: var(--Giant-Grey-10);
+  --Color: var(--Giant-White);
+  --Contrast: var(--Giant-Black);
+  --Contrast-Variant: var(--Giant-Grey-60);
+  --Alert: var(--Giant-Red);
+
+  --Font-Family-body: "Open Sans", sans-serif;
+  --Font-Family-headline: "Overpass", sans-serif;
+  --Font-Family-action: "Overpass", sans-serif;
+  --Font-Size-body-M-action-M: 14px;
+  --Font-Size-body-S-action-S: 12px;
+  --Font-Size-headline-M-body-XL: 20px;
+  --Font-Font-Line-Height-Small: 20px;
+  --Font-Font-Line-Height-Xsmall: 16px;
+  --Font-Font-Line-Height-Medium: 24px;
+  --Font-Weight-Regular: 400;
+  --Font-Weight-Bold: 700;
+  --Font-Weight-ExtraBold: 800;
+
+  --Tag-New-Bg: #ecf8ea;
+  --Tag-New-Text: #007e11;
+  --Tag-Sale-Bg: #f9ebe8;
+  --Tag-Sale-Text: var(--Alert);
+  --Tag-Neutral-Bg: #dee0e3;
+  --Tag-Neutral-Text: var(--Contrast-Variant);
+  --Border-Radius-S: var(--Spacing-General-XS);
+  --Action-Blue: #0050fc;
+  --Action-Blue-Pressed: #06038d;
 }
 
 * {
@@ -26,9 +58,9 @@ body {
 }
 
 body {
-  background: var(--page-bg);
-  color: var(--text-primary);
-  font-family: "Open Sans", sans-serif;
+  background: var(--Color);
+  color: var(--Contrast);
+  font-family: var(--Font-Family-body);
 }
 
 img {
@@ -44,28 +76,28 @@ input {
 .page-shell {
   margin: 0 auto;
   max-width: 1360px;
-  padding: 24px;
+  padding: calc(var(--Spacing-General-SM) + var(--Spacing-General-XS));
 }
 
 .plp-tabs {
   display: inline-flex;
-  gap: 8px;
-  margin-bottom: 20px;
+  gap: var(--Spacing-General-XS);
+  margin-bottom: calc(var(--Spacing-General-SM) + var(--General-XXS));
 }
 
 .plp-tab {
   -webkit-tap-highlight-color: transparent;
   appearance: none;
   background: #f2f2f5;
-  border: 1px solid #dedee0;
+  border: 1px solid var(--Tint);
   border-radius: 999px;
-  color: var(--text-secondary);
+  color: var(--Contrast-Variant);
   cursor: pointer;
-  font-family: "Overpass", sans-serif;
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 20px;
-  padding: 10px 16px;
+  font-family: var(--Font-Family-headline);
+  font-size: var(--Font-Size-body-M-action-M);
+  font-weight: var(--Font-Weight-Bold);
+  line-height: var(--Font-Font-Line-Height-Small);
+  padding: 10px var(--Spacing-General-SM);
   transition:
     background-color 140ms ease,
     border-color 140ms ease,
@@ -73,27 +105,27 @@ input {
 }
 
 .plp-tab.is-active {
-  background: #000000;
-  border-color: #000000;
-  color: #ffffff;
+  background: var(--Contrast);
+  border-color: var(--Contrast);
+  color: var(--Color);
 }
 
 .plp-tab:focus-visible {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--Contrast);
   outline-offset: 2px;
 }
 
 .card-row {
   display: grid;
-  gap: 20px;
+  gap: calc(var(--Spacing-General-SM) + var(--General-XXS));
   grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
 }
 
 .product-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius);
+  background: var(--Color);
+  border: 1px solid var(--Tint);
+  border-radius: var(--Border-Radius-S);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -110,7 +142,7 @@ input {
 }
 
 .product-card__link:focus-visible {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--Contrast);
   outline-offset: -2px;
 }
 
@@ -125,7 +157,7 @@ input {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  padding: 8px 16px 16px;
+  padding: var(--Spacing-General-XS) var(--Spacing-General-SM) var(--Spacing-General-SM);
 }
 
 .product-card__text-link {
@@ -137,7 +169,7 @@ input {
 }
 
 .product-card__text-link:focus-visible {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--Contrast);
   outline-offset: 2px;
 }
 
@@ -149,18 +181,18 @@ input {
 
 .card-tag {
   align-items: center;
-  background: var(--tag-bg);
+  background: var(--Tag-New-Bg);
   box-sizing: border-box;
-  color: var(--tag-text);
+  color: var(--Tag-New-Text);
   display: inline-flex;
-  font-family: "Overpass", sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  height: 24px;
+  font-family: var(--Font-Family-action);
+  font-size: var(--Font-Size-body-S-action-S);
+  font-weight: var(--Font-Weight-ExtraBold);
+  height: calc(var(--Spacing-General-SM) + var(--Spacing-General-XS));
   justify-content: center;
   left: 11px;
-  line-height: 16px;
-  padding: 0 12px;
+  line-height: var(--Font-Font-Line-Height-Xsmall);
+  padding: 0 var(--Spacing-General-S);
   position: absolute;
   text-transform: uppercase;
   top: 11px;
@@ -168,26 +200,26 @@ input {
 
 .card-tag__label {
   display: block;
-  line-height: 16px;
+  line-height: var(--Font-Font-Line-Height-Xsmall);
   transform: translateY(1px);
 }
 
 .card-tag--new {
-  padding: 0 8px;
+  padding: 0 var(--Spacing-General-XS);
 }
 
 .card-tag--sale {
-  background: var(--tag-sale-bg);
-  color: var(--tag-sale-text);
+  background: var(--Tag-Sale-Bg);
+  color: #C83317;
 }
 
 .card-tag--best-seller {
-  background: var(--tag-neutral-bg);
-  color: var(--tag-neutral-text);
+  background: var(--Tag-Neutral-Bg);
+  color: var(--Tag-Neutral-Text);
 }
 
 .award-badge-wrap {
-  padding: 12px;
+  padding: var(--Spacing-General-S);
   position: absolute;
   right: -1px;
   top: -1px;
@@ -202,12 +234,12 @@ input {
 }
 
 .product-card__media {
-  background: #ffffff;
-  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--Color);
+  border-radius: var(--Border-Radius-S) var(--Border-Radius-S) 0 0;
   display: flex;
   justify-content: center;
   overflow: hidden;
-  padding: 32px 8px;
+  padding: var(--Spacing-General-ML) var(--Spacing-General-XS);
 }
 
 .product-card__media-frame {
@@ -234,20 +266,20 @@ input {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  min-height: 32px;
-  padding: 0 16px 8px;
+  min-height: var(--Spacing-General-ML);
+  padding: 0 var(--Spacing-General-SM) var(--Spacing-General-XS);
 }
 
 .swatches,
 .selector-group {
   align-items: center;
   display: flex;
-  gap: 16px;
-  min-height: 32px;
+  gap: var(--Spacing-General-SM);
+  min-height: var(--Spacing-General-ML);
 }
 
 .selector-group--variants {
-  gap: 8px;
+  gap: var(--Spacing-General-XS);
 }
 
 .selector-group--ghost {
@@ -259,7 +291,7 @@ input {
   appearance: none;
   background: var(--swatch-color-a);
   background-image: linear-gradient(-69deg, var(--swatch-color-a) 0 49.5%, var(--swatch-color-b, var(--swatch-color-a)) 50.5% 100%);
-  border: 1px solid #dedee0;
+  border: 1px solid var(--Tint);
   border-radius: 999px;
   cursor: pointer;
   height: 18px;
@@ -274,18 +306,18 @@ input {
   -webkit-tap-highlight-color: transparent;
   align-items: center;
   appearance: none;
-  background: #ffffff;
-  border: 2px solid #58626e;
+  background: var(--Color);
+  border: 2px solid var(--Contrast-Variant);
   border-radius: 999px;
-  color: #58626e;
+  color: var(--Contrast-Variant);
   cursor: pointer;
   display: inline-flex;
-  font-family: "Overpass", sans-serif;
-  font-size: 12px;
-  font-weight: 800;
-  height: 32px;
+  font-family: var(--Font-Family-action);
+  font-size: var(--Font-Size-body-S-action-S);
+  font-weight: var(--Font-Weight-ExtraBold);
+  height: var(--Spacing-General-ML);
   justify-content: center;
-  line-height: 16px;
+  line-height: var(--Font-Font-Line-Height-Xsmall);
   min-width: 72px;
   padding: 0 15px;
   text-transform: uppercase;
@@ -294,24 +326,24 @@ input {
 
 .variant-pill__label {
   display: block;
-  line-height: 16px;
+  line-height: var(--Font-Font-Line-Height-Xsmall);
   transform: translateY(1px);
 }
 
 .variant-pill.is-selected {
-  background: #000000;
-  border-color: #000000;
-  color: #ffffff;
+  background: var(--Contrast);
+  border-color: var(--Contrast);
+  color: var(--Color);
 }
 
 .swatch::before {
   content: "";
-  inset: -8px;
+  inset: calc(-1 * var(--Spacing-General-XS));
   position: absolute;
 }
 
 .swatch.is-selected::after {
-  border: 1.5px solid #000000;
+  border: 1.5px solid var(--Contrast);
   border-radius: 999px;
   content: "";
   inset: -4px;
@@ -322,12 +354,14 @@ input {
   -webkit-tap-highlight-color: transparent;
   align-items: center;
   --tooltip-shift: 0px;
-  color: var(--text-primary);
+  color: var(--Contrast);
   cursor: pointer;
   display: inline-flex;
-  font-size: 14px;
-  gap: 4px;
-  line-height: 20px;
+  font-family: var(--Font-Family-body);
+  font-size: var(--Font-Size-body-M-action-M);
+  font-weight: var(--Font-Weight-Regular);
+  gap: var(--General-XXS);
+  line-height: var(--Font-Font-Line-Height-Small);
   position: relative;
   z-index: 3;
 }
@@ -339,11 +373,11 @@ input {
 .compare-toggle__box {
   -webkit-tap-highlight-color: transparent;
   display: inline-flex;
-  height: 24px;
+  height: calc(var(--Spacing-General-SM) + var(--Spacing-General-XS));
   justify-content: center;
   align-items: center;
   position: relative;
-  width: 24px;
+  width: calc(var(--Spacing-General-SM) + var(--Spacing-General-XS));
 }
 
 .compare-toggle input {
@@ -355,21 +389,22 @@ input {
 }
 
 .compare-tooltip {
-  background: #ffffff;
-  border: 1px solid #bcbcbc;
-  border-radius: 8px;
-  bottom: calc(100% + 12px);
+  background: var(--Color);
+  border: 1px solid var(--Giant-Grey-30);
+  border-radius: var(--Border-Radius-S);
+  bottom: calc(100% + var(--Spacing-General-S));
   box-shadow:
     0 0 4px rgba(0, 0, 0, 0.04),
     0 4px 8px rgba(0, 0, 0, 0.06);
-  color: #000000;
+  color: var(--Contrast);
   display: none;
-  font-size: 12px;
-  font-weight: 400;
+  font-family: var(--Font-Family-body);
+  font-size: var(--Font-Size-body-S-action-S);
+  font-weight: var(--Font-Weight-Regular);
   letter-spacing: 0.24px;
-  line-height: 16px;
+  line-height: var(--Font-Font-Line-Height-Xsmall);
   max-width: 196px;
-  padding: 12px 16px;
+  padding: var(--Spacing-General-S) var(--Spacing-General-SM);
   pointer-events: none;
   position: absolute;
   left: 50%;
@@ -380,9 +415,9 @@ input {
 }
 
 .compare-tooltip::after {
-  background: #ffffff;
-  border-right: 1px solid #bcbcbc;
-  border-top: 1px solid #bcbcbc;
+  background: var(--Color);
+  border-right: 1px solid var(--Giant-Grey-30);
+  border-top: 1px solid var(--Giant-Grey-30);
   border-top-right-radius: 2px;
   content: "";
   height: 11.7px;
@@ -395,8 +430,8 @@ input {
 
 .checkbox-ui {
   -webkit-tap-highlight-color: transparent;
-  background: #ffffff;
-  border: 1px solid #58626e;
+  background: var(--Color);
+  border: 1px solid var(--Contrast-Variant);
   cursor: pointer;
   height: 18px;
   position: relative;
@@ -407,8 +442,8 @@ input {
 }
 
 .compare-toggle input:checked + .checkbox-ui {
-  background: #0050fc;
-  border-color: #0050fc;
+  background: var(--Action-Blue);
+  border-color: var(--Action-Blue);
 }
 
 .compare-toggle input:checked + .checkbox-ui::after {
@@ -427,7 +462,7 @@ input {
 
 @media (hover: hover) and (pointer: fine) {
   .product-card:hover {
-    border-color: var(--card-border-hover);
+    border-color: var(--Giant-Grey-30);
   }
 
   .product-card.has-hover-media:hover .product-card__hover-image {
@@ -440,7 +475,7 @@ input {
 
   .swatch:hover:not(.is-selected)::after,
   .swatch:focus-visible:not(.is-selected)::after {
-    border: 1.5px solid #bcbcbc;
+    border: 1.5px solid var(--Giant-Grey-30);
     border-radius: 999px;
     content: "";
     inset: -4px;
@@ -448,39 +483,39 @@ input {
   }
 
   .swatch:focus-visible {
-    outline: 2px solid #000000;
+    outline: 2px solid var(--Contrast);
     outline-offset: 4px;
   }
 
   .compare-toggle:hover input:not(:checked) + .checkbox-ui {
-    border-color: #0050fc;
+    border-color: var(--Action-Blue);
   }
 
   .compare-toggle:hover input:checked + .checkbox-ui {
-    background: #06038d;
-    border-color: #06038d;
+    background: var(--Action-Blue-Pressed);
+    border-color: var(--Action-Blue-Pressed);
   }
 
   .variant-pill:hover:not(.is-selected) {
-    background: #ffffff;
-    border-color: #000000;
-    color: #000000;
+    background: var(--Color);
+    border-color: var(--Contrast);
+    color: var(--Contrast);
   }
 }
 
 .compare-toggle input:focus-visible + .checkbox-ui {
-  outline: 2px solid #000000;
+  outline: 2px solid var(--Contrast);
   outline-offset: 3px;
 }
 
 .compare-toggle.is-disabled {
-  color: #58626e;
+  color: var(--Contrast-Variant);
   cursor: not-allowed;
 }
 
 .compare-toggle.is-disabled .checkbox-ui {
   background: #f2f2f5;
-  border-color: #dedee0;
+  border-color: var(--Tint);
   cursor: not-allowed;
 }
 
@@ -493,23 +528,25 @@ input {
 .title-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--General-XXS);
 }
 
 .product-title {
-  font-family: "Overpass", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
+  font-family: var(--Font-Family-headline);
+  font-size: var(--Font-Size-headline-M-body-XL);
+  font-weight: var(--Font-Weight-Bold);
+  line-height: var(--Font-Font-Line-Height-Medium);
   margin: 0;
 }
 
 .product-description,
 .finance-copy,
 .disclaimer {
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 20px;
+  color: var(--Contrast-Variant);
+  font-family: var(--Font-Family-body);
+  font-size: var(--Font-Size-body-M-action-M);
+  font-weight: var(--Font-Weight-Regular);
+  line-height: var(--Font-Font-Line-Height-Small);
   margin: 0;
 }
 
@@ -522,39 +559,39 @@ input {
   flex-direction: column;
   gap: 0;
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: var(--Spacing-General-SM);
 }
 
 .price-line {
   align-items: baseline;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--Spacing-General-XS);
 }
 
 .price-current,
 .price-old,
 .price-prefix {
-  font-family: "Overpass", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 24px;
+  font-family: var(--Font-Family-headline);
+  font-size: var(--Font-Size-headline-M-body-XL);
+  font-weight: var(--Font-Weight-Bold);
+  line-height: var(--Font-Font-Line-Height-Medium);
 }
 
 .price-current {
-  color: var(--text-primary);
+  color: var(--Contrast);
 }
 
 .price-current--sale {
-  color: var(--price-sale);
+  color: #C83317;
 }
 
 .price-prefix {
-  color: var(--text-primary);
+  color: var(--Contrast);
 }
 
 .price-old {
-  color: var(--text-secondary);
+  color: var(--Contrast-Variant);
   text-decoration: line-through;
 }
 
@@ -594,12 +631,12 @@ input {
 
 @media (max-width: 640px) {
   .page-shell {
-    padding: 12px;
+    padding: var(--Spacing-General-S);
   }
 
   .plp-tabs {
     display: flex;
-    margin-bottom: 16px;
+    margin-bottom: var(--Spacing-General-SM);
     width: 100%;
   }
 
@@ -618,6 +655,6 @@ input {
   .price-old,
   .price-prefix {
     font-size: 18px;
-    line-height: 24px;
+    line-height: var(--Font-Font-Line-Height-Medium);
   }
 }
