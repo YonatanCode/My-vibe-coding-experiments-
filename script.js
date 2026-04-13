@@ -173,6 +173,7 @@ function createGearImage(label, accent, secondaryAccent = accent) {
 
 const gearProducts = [
   {
+    catalog: 'wheel-systems',
     title: 'CXR X1',
     url: 'https://www.giant-bicycles.com/us/cxr-x1-2023',
     description:
@@ -218,6 +219,23 @@ const gearProducts = [
     ]
   },
   {
+    catalog: 'wheel-systems',
+    title: 'SLR 1 42 Front Wheel',
+    url: 'https://www.giant-bicycles.com/us/slr-1-42-front-wheel-2021',
+    description:
+      'A lightweight carbon road wheel built for efficient acceleration, steady handling, and all-around speed on varied terrain.',
+    price: {
+      mode: 'regular',
+      amount: '$685'
+    },
+    tag: null,
+    images: [
+      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/jz4qlmoxiwj3hy4jfu5z/SLR-1-42-FW_1.jpg',
+      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/tx9n1ofgwccmvm5qytf1/SLR-1-42-FW_2.jpg'
+    ]
+  },
+  {
+    catalog: 'tires',
     title: 'Maxxis Minion DHF Mountain Bike Tire',
     url: 'https://www.giant-bicycles.com/us/maxxis-minion-dhf-mountain-bike-tire-2023',
     description:
@@ -233,9 +251,239 @@ const gearProducts = [
       type: 'sale',
       label: 'Save 60%'
     },
-    images: [
-      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/nm6xmgxfkxteh0j2oye4/Minion-DHF-3Q-Tanwall.jpg',
-      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/jaaasal4mh5f9ixcw5mc/Minion-DHF-Tread.jpg'
+    colors: [
+      {
+        key: 'tan-wall',
+        label: 'Tan Wall',
+        colors: ['#1f1f21', '#b98d62'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/nm6xmgxfkxteh0j2oye4/Minion-DHF-3Q-Tanwall.jpg'
+        ]
+      },
+      {
+        key: 'black',
+        label: 'Black',
+        colors: ['#0f0f10'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/wv5ruvra3vqz9lsdtd5c/Minion-DHF-3Q.jpg'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'tires',
+    title: 'Vittoria Mezcal XC Race',
+    url: 'https://www.giant-bicycles.com/us/vittoria-mezcal-xc-race',
+    description:
+      'A fast-rolling XC race tire tuned for low drag, reliable grip, and efficient speed across hardpack and mixed trails.',
+    price: {
+      mode: 'regular',
+      amount: '$103.99'
+    },
+    tag: null,
+    colors: [
+      {
+        key: 'black',
+        label: 'Black',
+        colors: ['#111111'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/pxf5pdtvcs6v8uv316jv/MezcalXCRace_SideBlack.png'
+        ]
+      },
+      {
+        key: 'brown-black',
+        label: 'Brown / Black',
+        colors: ['#181818', '#8a684d'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/mgyznc8seyqrui5q2xqd/Mezcal-XC-RaceSideTan.png'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'helmets',
+    title: 'Rev Pro Mips Helmet',
+    url: 'https://www.giant-bicycles.com/us/rev-pro-mips-helmet-2026',
+    description:
+      'A high-performance road helmet shaped for cooling airflow, aero efficiency, and confident protection on demanding rides.',
+    price: {
+      mode: 'regular',
+      amount: '$300'
+    },
+    tag: null,
+    colors: [
+      {
+        key: 'matte-black',
+        label: 'Matte Black',
+        colors: ['#161616'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xz2idjnmjvdzff34675o/GIANTREVPROMIPSMATTEBLACK80000300380000300480000300580000300680000300780000300801.png'
+        ]
+      },
+      {
+        key: 'matte-white',
+        label: 'Matte White',
+        colors: ['#d9dce1'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/u1qpez0njc9tjoooscq6/GIANTREVPROMIPSMATTEWHITE800003009800003010800003011800003012800003013800003014011.png'
+        ]
+      },
+      {
+        key: 'matte-grey',
+        label: 'Matte Grey',
+        colors: ['#8e9197'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xyyoixnrlztvufvrorvr/GIANTREVPROMIPSMATTEGRAY80000302180000302280000302380000302480000302580000302601.png'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'helmets',
+    title: 'Rev Elite',
+    url: 'https://www.giant-bicycles.com/us/rev-elite',
+    description:
+      'A lightweight road helmet that blends modern ventilation, secure fit, and everyday race-inspired comfort.',
+    price: {
+      mode: 'regular',
+      amount: '$190'
+    },
+    tag: null,
+    colors: [
+      {
+        key: 'gloss-panther-black',
+        label: 'Gloss Panther Black',
+        colors: ['#141414'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/juvwgh6tirtityswqtjg/_44A0579.jpg'
+        ]
+      },
+      {
+        key: 'matte-white-silver',
+        label: 'Matte White / Silver',
+        colors: ['#f1f1ef', '#c9cbcf'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/hbb551kimjfdtavdoddi/_44A0775.jpg'
+        ]
+      },
+      {
+        key: 'gloss-ultra-navy',
+        label: 'Gloss Ultra Navy',
+        colors: ['#3817a1'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/u84hid0ebypbcykgow3v/_44A0635.jpg'
+        ]
+      },
+      {
+        key: 'matte-castle-rock',
+        label: 'Matte Castle Rock',
+        colors: ['#777777', '#373737'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/mntzb9tupw70apvoebtn/_44A0759.jpg'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'helmets',
+    title: 'Path MIPS Mens Helmet',
+    url: 'https://www.giant-bicycles.com/us/path-mips-mens-helmet-2022',
+    description:
+      'A versatile everyday helmet designed for comfortable ventilation, extended coverage, and relaxed all-ride confidence.',
+    price: {
+      mode: 'from',
+      amount: '$45'
+    },
+    tag: null,
+    colors: [
+      {
+        key: 'matte-metal',
+        label: 'Matte Metal',
+        colors: ['#bfbca0', '#f1f1ee'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/egqly3zyprstqtk6ly3k/PATH-MIPS-MATTE-METAL-TOPO-800002477-800002478.jpg'
+        ]
+      },
+      {
+        key: 'black-blue',
+        label: 'Black / Blue',
+        colors: ['#101113', '#3f78e8'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/egqly3zyprstqtk6ly3k/PATH-MIPS-MATTE-METAL-TOPO-800002477-800002478.jpg'
+        ]
+      },
+      {
+        key: 'matte-phantom-green',
+        label: 'Matte Phantom Green',
+        colors: ['#687867'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/bpaombjbeu3nfnlbjkmm/PATH-MIPS-PHANTOM-GREEN-TOPO-800002479-800002480.jpg'
+        ]
+      },
+      {
+        key: 'matte-panther-black',
+        label: 'Matte Panther Black',
+        colors: ['#151515'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/zlmynwhvmwqyd2comfmy/PATH-MIPS-PANTHER-BLACK-TOPO-800002483-800002484.jpg'
+        ]
+      },
+      {
+        key: 'matte-white',
+        label: 'Matte White',
+        colors: ['#e8eaee'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/pgudxhqhociblrksbbxy/PATH-MIPS-MATTE-WHITE-800002570-800002571-800002599-800002500.jpg'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'apparel',
+    title: 'Transcend Mens Baggy Short',
+    url: 'https://www.giant-bicycles.com/us/transcend-mens-baggy-short',
+    description:
+      'A relaxed riding short with stretch fabric, adjustable fit, and everyday utility for trail or gravel sessions.',
+    price: {
+      mode: 'regular',
+      amount: '$44.99'
+    },
+    tag: null,
+    colors: [
+      {
+        key: 'blue',
+        label: 'Blue',
+        colors: ['#2e58a6'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/trjofjdvjte83mpzpr53/16364-68.jpg'
+        ]
+      }
+    ]
+  },
+  {
+    catalog: 'apparel',
+    title: 'Giant Factory Off Road Team Replica XC Bib Short',
+    url: 'https://www.giant-bicycles.com/us/giant-factory-off-road-team-replica-xc-bib-short-2024',
+    description:
+      'A pro-inspired XC bib short combining race-ready compression, breathable support, and long-ride comfort.',
+    price: {
+      mode: 'regular',
+      amount: '$175'
+    },
+    tag: {
+      type: 'best-seller',
+      label: 'Online Exclusive'
+    },
+    colors: [
+      {
+        key: 'black',
+        label: 'Black',
+        colors: ['#111111'],
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/spxe5kwyyyqnm6riyuos/GIANTGFORTREPLICAXCBIBSHORT@BLACKFRONT@860002661;860002662;860002663;860002664;860002665;860002666.jpg',
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/okg0urbv6rn3u7cug2im/GIANTGFORTREPLICAXCBIBSHORT@BLACKREAR@860002661;860002662;860002663;860002664;860002665;860002666.jpg'
+        ]
+      }
     ]
   }
 ];
@@ -244,9 +492,17 @@ const row = document.getElementById('card-row');
 const tabs = Array.from(document.querySelectorAll('.plp-tab'));
 const MAX_COMPARE_ITEMS = 3;
 const TOUCH_QUERY = '(hover: none), (pointer: coarse)';
+const PRICE_DISCLAIMER = '0% APR Finance';
+const wheelSystemsProducts = gearProducts.filter((product) => product.catalog === 'wheel-systems');
+const tiresProducts = gearProducts.filter((product) => product.catalog === 'tires');
+const helmetsProducts = gearProducts.filter((product) => product.catalog === 'helmets');
+const apparelProducts = gearProducts.filter((product) => product.catalog === 'apparel');
 const catalogs = {
   bikes: bikesProducts,
-  gear: gearProducts
+  'wheel-systems': wheelSystemsProducts,
+  tires: tiresProducts,
+  helmets: helmetsProducts,
+  apparel: apparelProducts
 };
 let activeCatalogKey = 'bikes';
 
@@ -332,18 +588,40 @@ function renderPriceMarkup(price) {
   `;
 }
 
-function renderSecondaryMarkup(product) {
-  const parts = [];
-
-  if (product.secondary) {
-    parts.push(`<p class="finance-copy">${product.secondary}</p>`);
+function parseCurrencyAmount(value) {
+  if (!value) {
+    return null;
   }
 
-  (product.disclaimers || []).forEach((line) => {
-    parts.push(`<p class="disclaimer">${line}</p>`);
-  });
+  const numericValue = Number(String(value).replace(/[^0-9.]/g, ''));
+  return Number.isFinite(numericValue) ? numericValue : null;
+}
 
-  return parts.join('');
+function getDiscountPercentage(price) {
+  const currentAmount = parseCurrencyAmount(price?.amount);
+  const oldAmount = parseCurrencyAmount(price?.oldAmount);
+
+  if (!currentAmount || !oldAmount || oldAmount <= currentAmount) {
+    return null;
+  }
+
+  return Math.round(((oldAmount - currentAmount) / oldAmount) * 100);
+}
+
+function renderSecondaryMarkup(product) {
+  const price = product.price;
+  const discountPercentage = getDiscountPercentage(price);
+  const isDiscounted = price?.mode === 'discount' || price?.mode === 'from-discount';
+
+  if (!isDiscounted || !price?.oldAmount || !discountPercentage) {
+    return `<p class="finance-copy">${PRICE_DISCLAIMER}</p>`;
+  }
+
+  return `
+    <p class="finance-copy">${PRICE_DISCLAIMER}</p>
+    <p class="disclaimer">Lowest price in 30 days before the discount: ${price.oldAmount} -${discountPercentage}%</p>
+    <p class="disclaimer">Regular price: ${price.oldAmount} -${discountPercentage}%</p>
+  `;
 }
 
 function renderTagMarkup(tag) {
