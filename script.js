@@ -1,4 +1,4 @@
-const products = [
+const bikesProducts = [
   {
     title: 'Talon 2',
     url: 'https://www.giant-bicycles.com/us/talon-2-2025',
@@ -154,9 +154,101 @@ const products = [
   }
 ];
 
+function createGearImage(label, accent, secondaryAccent = accent) {
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="936" height="624" viewBox="0 0 936 624">
+      <rect width="936" height="624" rx="36" fill="#ffffff"/>
+      <rect x="128" y="112" width="680" height="400" rx="32" fill="#f8f8fa" stroke="#dedee0" stroke-width="10"/>
+      <rect x="184" y="168" width="568" height="288" rx="24" fill="${accent}" opacity="0.12"/>
+      <circle cx="256" cy="312" r="76" fill="${accent}" opacity="0.22"/>
+      <circle cx="680" cy="312" r="76" fill="${secondaryAccent}" opacity="0.22"/>
+      <rect x="280" y="246" width="376" height="132" rx="24" fill="#ffffff"/>
+      <text x="468" y="302" text-anchor="middle" font-family="Open Sans, Arial, sans-serif" font-size="34" font-weight="700" fill="#111111">${label}</text>
+      <text x="468" y="350" text-anchor="middle" font-family="Open Sans, Arial, sans-serif" font-size="24" fill="#58626e">GIANT GEAR</text>
+    </svg>
+  `;
+
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+const gearProducts = [
+  {
+    title: 'CXR X1',
+    url: 'https://www.giant-bicycles.com/us/cxr-x1-2023',
+    description:
+      'A lightweight carbon wheel option built for gravel speed, responsive handling, and confident mixed-terrain control.',
+    price: {
+      mode: 'discount',
+      amount: '$660',
+      oldAmount: '$1,100'
+    },
+    secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options',
+    tag: {
+      type: 'new',
+      label: 'New'
+    },
+    selectorType: 'variants',
+    variants: [
+      {
+        key: 'front',
+        label: 'Front',
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/wsmr1wm4rliqbca7wp6w/GIANT-CXR-X1-HOOKLESS-DB-FW-350000307-1.jpg'
+        ],
+        price: {
+          mode: 'discount',
+          amount: '$660',
+          oldAmount: '$1,100'
+        },
+        secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options'
+      },
+      {
+        key: 'rear-hg',
+        label: 'Rear HG',
+        images: [
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xevhtoiwixxqyra4xtqz/GIANT-CXR-X1-HOOKLESS-DB-RW-350000325-1.jpg'
+        ],
+        price: {
+          mode: 'discount',
+          amount: '$660',
+          oldAmount: '$1,100'
+        },
+        secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options'
+      }
+    ]
+  },
+  {
+    title: 'Maxxis Minion DHF Mountain Bike Tire',
+    url: 'https://www.giant-bicycles.com/us/maxxis-minion-dhf-mountain-bike-tire-2023',
+    description:
+      'A benchmark trail tire built to balance rolling speed with strong braking bite and confident cornering traction.',
+    price: {
+      mode: 'from-discount',
+      amount: '$42',
+      oldAmount: '$105'
+    },
+    secondary:
+      'MSRP excluding sales tax, shipping & handling, destination fees, e-bike battery recycling fees and dealer-installed options. Dealer prices and fees may vary.',
+    tag: {
+      type: 'sale',
+      label: 'Save 60%'
+    },
+    images: [
+      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/nm6xmgxfkxteh0j2oye4/Minion-DHF-3Q-Tanwall.jpg',
+      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/jaaasal4mh5f9ixcw5mc/Minion-DHF-Tread.jpg'
+    ]
+  }
+];
+
 const row = document.getElementById('card-row');
+const tabs = Array.from(document.querySelectorAll('.plp-tab'));
 const MAX_COMPARE_ITEMS = 3;
 const TOUCH_QUERY = '(hover: none), (pointer: coarse)';
+const catalogs = {
+  bikes: bikesProducts,
+  gear: gearProducts
+};
+let activeCatalogKey = 'bikes';
 
 function isTouchInteractionMode() {
   return window.matchMedia(TOUCH_QUERY).matches;
@@ -179,6 +271,22 @@ function createSwatch(color, selected, onSelect) {
     event.preventDefault();
     event.stopPropagation();
     onSelect(color.key);
+    button.blur();
+    document.activeElement?.blur?.();
+  });
+  return button;
+}
+
+function createVariantPill(variant, selected, onSelect) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `variant-pill${selected ? ' is-selected' : ''}`;
+  button.innerHTML = `<span class="variant-pill__label">${variant.label}</span>`;
+  button.setAttribute('aria-pressed', String(selected));
+  button.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onSelect(variant.key);
     button.blur();
     document.activeElement?.blur?.();
   });
@@ -250,6 +358,7 @@ function createCard(product) {
   const article = document.createElement('article');
   article.className = 'product-card has-hover-media';
   article.setAttribute('aria-label', `${product.title} product tile`);
+  const showCompare = activeCatalogKey === 'bikes';
 
   article.innerHTML = `
     <a class="product-card__link" href="${product.url}" aria-label="Open ${product.title} product page"></a>
@@ -264,7 +373,8 @@ function createCard(product) {
       </div>
     </div>
     <div class="product-card__topline">
-      <div class="swatches" aria-label="Available colors"></div>
+      <div class="selector-group" aria-label="Available options"></div>
+      ${showCompare ? `
       <label class="compare-toggle">
         <span>Compare</span>
         <span class="compare-toggle__box">
@@ -275,6 +385,7 @@ function createCard(product) {
           </span>
         </span>
       </label>
+      ` : '<span class="compare-toggle compare-toggle--ghost" aria-hidden="true"></span>'}
     </div>
     <div class="product-card__copy">
       <a class="product-card__text-link" href="${product.url}" aria-label="Read more about ${product.title}">
@@ -290,20 +401,23 @@ function createCard(product) {
     </div>
   `;
 
-  const swatchContainer = article.querySelector('.swatches');
+  const selectorGroup = article.querySelector('.selector-group');
   const mainImage = article.querySelector('.product-card__image');
   const hoverImage = article.querySelector('.product-card__hover-image');
+  const pricingContainer = article.querySelector('.product-card__pricing');
 
-  function applyColor(colorKey) {
-    const color = product.colors.find((entry) => entry.key === colorKey) || product.colors[0];
-    const [primaryImage, secondaryImage] = color.images;
+  function applySelection(optionKey) {
+    const usesVariants = product.selectorType === 'variants';
+    const entries = usesVariants ? product.variants : product.colors;
+    const selectedEntry = entries.find((entry) => entry.key === optionKey) || entries[0];
+    const [primaryImage, secondaryImage] = selectedEntry.images;
 
     mainImage.src = primaryImage;
-    mainImage.alt = `${product.title} in ${color.label}`;
+    mainImage.alt = `${product.title} in ${selectedEntry.label}`;
 
     if (secondaryImage) {
       hoverImage.src = secondaryImage;
-      hoverImage.alt = `${product.title} alternate view in ${color.label}`;
+      hoverImage.alt = `${product.title} alternate view in ${selectedEntry.label}`;
       article.classList.add('has-hover-media');
     } else {
       hoverImage.removeAttribute('src');
@@ -311,26 +425,78 @@ function createCard(product) {
       article.classList.remove('has-hover-media');
     }
 
-    swatchContainer.querySelectorAll('.swatch').forEach((swatch) => {
-      const isSelected = swatch.dataset.color === color.key;
-      swatch.classList.toggle('is-selected', isSelected);
-      swatch.setAttribute('aria-pressed', String(isSelected));
+    if (usesVariants) {
+      pricingContainer.innerHTML = `
+        ${renderPriceMarkup(selectedEntry.price || product.price)}
+        ${renderSecondaryMarkup({
+          secondary: selectedEntry.secondary || product.secondary,
+          disclaimers: selectedEntry.disclaimers || product.disclaimers
+        })}
+      `;
+    }
+
+    selectorGroup.querySelectorAll('button').forEach((button) => {
+      const isSelected = button.dataset.option === selectedEntry.key;
+      button.classList.toggle('is-selected', isSelected);
+      button.setAttribute('aria-pressed', String(isSelected));
     });
   }
 
+  if (product.selectorType === 'variants') {
+    selectorGroup.classList.add('selector-group--variants');
+    selectorGroup.setAttribute('aria-label', 'Available product variants');
+    product.variants.forEach((variant, index) => {
+      const pill = createVariantPill(variant, index === 0, applySelection);
+      pill.dataset.option = variant.key;
+      selectorGroup.appendChild(pill);
+    });
+    applySelection(product.variants[0].key);
+    return article;
+  }
+
+  if (!product.colors?.length) {
+    selectorGroup.classList.add('selector-group--ghost');
+
+    const [primaryImage, secondaryImage] = product.images || [];
+    mainImage.src = primaryImage;
+    mainImage.alt = product.title;
+
+    if (secondaryImage) {
+      hoverImage.src = secondaryImage;
+      hoverImage.alt = `${product.title} alternate view`;
+      article.classList.add('has-hover-media');
+    } else {
+      hoverImage.removeAttribute('src');
+      hoverImage.alt = '';
+      article.classList.remove('has-hover-media');
+    }
+
+    return article;
+  }
+
+  selectorGroup.classList.add('swatches');
+  selectorGroup.setAttribute('aria-label', 'Available colors');
   product.colors.forEach((color, index) => {
-    const swatch = createSwatch(color, index === 0, applyColor);
-    swatch.dataset.color = color.key;
-    swatchContainer.appendChild(swatch);
+    const swatch = createSwatch(color, index === 0, applySelection);
+    swatch.dataset.option = color.key;
+    selectorGroup.appendChild(swatch);
   });
 
-  applyColor(product.colors[0].key);
+  applySelection(product.colors[0].key);
   return article;
 }
 
-products.forEach((product) => {
-  row.appendChild(createCard(product));
-});
+function renderCatalog(catalogKey) {
+  activeCatalogKey = catalogKey;
+  row.innerHTML = '';
+
+  catalogs[catalogKey].forEach((product) => {
+    row.appendChild(createCard(product));
+  });
+
+  updateCompareAvailability();
+  updateTooltipEdgeAlignment();
+}
 
 function updateCompareAvailability() {
   const compareInputs = Array.from(row.querySelectorAll('input[name="compare"]'));
@@ -495,3 +661,23 @@ window.addEventListener('resize', () => {
 
 updateCompareAvailability();
 updateTooltipEdgeAlignment();
+
+tabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    const nextKey = tab.dataset.tab;
+
+    if (!nextKey || nextKey === activeCatalogKey) {
+      return;
+    }
+
+    tabs.forEach((entry) => {
+      const isActive = entry === tab;
+      entry.classList.toggle('is-active', isActive);
+      entry.setAttribute('aria-selected', String(isActive));
+    });
+
+    renderCatalog(nextKey);
+  });
+});
+
+renderCatalog(activeCatalogKey);

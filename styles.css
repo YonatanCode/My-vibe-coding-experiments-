@@ -47,6 +47,42 @@ input {
   padding: 24px;
 }
 
+.plp-tabs {
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.plp-tab {
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  background: #f2f2f5;
+  border: 1px solid #dedee0;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: "Overpass", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  padding: 10px 16px;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.plp-tab.is-active {
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
+}
+
+.plp-tab:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
 .card-row {
   display: grid;
   gap: 20px;
@@ -159,6 +195,9 @@ input {
 }
 
 .award-badge {
+  aspect-ratio: 1;
+  mix-blend-mode: darken;
+  object-fit: cover;
   width: 48px;
 }
 
@@ -194,14 +233,23 @@ input {
 .product-card__topline {
   align-items: center;
   display: flex;
-  height: 24px;
   justify-content: space-between;
-  padding: 0 16px 8px;
+  min-height: 24px;
+  padding: 0 16px 16px;
 }
 
-.swatches {
+.swatches,
+.selector-group {
   display: flex;
   gap: 16px;
+}
+
+.selector-group--variants {
+  gap: 8px;
+}
+
+.selector-group--ghost {
+  visibility: hidden;
 }
 
 .swatch {
@@ -218,6 +266,40 @@ input {
   position: relative;
   width: 18px;
   z-index: 3;
+}
+
+.variant-pill {
+  -webkit-tap-highlight-color: transparent;
+  align-items: center;
+  appearance: none;
+  background: #ffffff;
+  border: 2px solid #58626e;
+  border-radius: 999px;
+  color: #58626e;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Overpass", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  height: 32px;
+  justify-content: center;
+  line-height: 16px;
+  min-width: 72px;
+  padding: 0 15px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.variant-pill__label {
+  display: block;
+  line-height: 16px;
+  transform: translateY(1px);
+}
+
+.variant-pill.is-selected {
+  background: #000000;
+  border-color: #000000;
+  color: #ffffff;
 }
 
 .swatch::before {
@@ -246,6 +328,10 @@ input {
   line-height: 20px;
   position: relative;
   z-index: 3;
+}
+
+.compare-toggle--ghost {
+  visibility: hidden;
 }
 
 .compare-toggle__box {
@@ -371,6 +457,12 @@ input {
   .compare-toggle:hover input:checked + .checkbox-ui {
     background: #06038d;
     border-color: #06038d;
+  }
+
+  .variant-pill:hover:not(.is-selected) {
+    background: #ffffff;
+    border-color: #000000;
+    color: #000000;
   }
 }
 
@@ -501,6 +593,18 @@ input {
 @media (max-width: 640px) {
   .page-shell {
     padding: 12px;
+  }
+
+  .plp-tabs {
+    display: flex;
+    margin-bottom: 16px;
+    width: 100%;
+  }
+
+  .plp-tab {
+    flex: 1 1 0;
+    justify-content: center;
+    text-align: center;
   }
 
   .card-row {
