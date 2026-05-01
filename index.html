@@ -81,12 +81,13 @@
 
       <section class="search-page__content" id="search-content">
         <aside class="filters-panel" id="filters-panel" aria-label="Product filters">
-          <section class="filter-group filter-group--open">
-            <div class="filter-group__header">
-              <h2 class="filter-group__title">Availability</h2>
-              <span class="filter-group__symbol" aria-hidden="true">-</span>
-            </div>
 
+          <!-- Availability: near me (toggle + distance) -->
+          <section class="filter-group filter-group--open">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="true">
+              <h2 class="filter-group__title">Availability</h2>
+              <span class="filter-group__symbol" aria-hidden="true">&#8722;</span>
+            </button>
             <div class="filter-group__body">
               <label class="switch-field">
                 <input id="availability-toggle" type="checkbox" />
@@ -126,70 +127,103 @@
             </div>
           </section>
 
+          <!-- Availability: store selector (new) -->
+          <section class="filter-group filter-group--open">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="true">
+              <h2 class="filter-group__title">Availability</h2>
+              <span class="filter-group__symbol" aria-hidden="true">&#8722;</span>
+            </button>
+            <div class="filter-group__body">
+              <button class="availability-stores-btn" id="open-store-modal" type="button">
+                <img src="./pin-icon.svg" class="availability-stores-btn__icon" alt="" />
+                <span class="availability-stores-btn__label">All stores</span>
+              </button>
+              <label class="filter-checkbox">
+                <span class="compare-toggle__box">
+                  <input type="checkbox" id="filter-instore-stock" />
+                  <span class="checkbox-ui" aria-hidden="true"></span>
+                </span>
+                <span class="filter-checkbox__label">In store stock</span>
+              </label>
+              <label class="filter-checkbox">
+                <span class="compare-toggle__box">
+                  <input type="checkbox" id="filter-available-pickup" />
+                  <span class="checkbox-ui" aria-hidden="true"></span>
+                </span>
+                <span class="filter-checkbox__label">Available for pickup</span>
+              </label>
+              <div class="store-pills" id="store-pills" hidden></div>
+            </div>
+          </section>
+
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Size</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Best for</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Sale</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Price range</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Color</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Frame material</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Brake type</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
 
           <section class="filter-group">
-            <div class="filter-group__header filter-group__header--compact">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Seatpost type</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
-            </div>
+            </button>
+            <div class="filter-group__body"></div>
           </section>
+
         </aside>
 
         <section class="products-area" aria-label="Products">
           <div class="products-grid" id="products-grid"></div>
-
-          <div class="empty-state" id="empty-state" hidden>
-            <h2>No bikes match that availability range.</h2>
-            <p>Try widening the distance or turning off the availability filter.</p>
-          </div>
         </section>
       </section>
     </main>
@@ -210,6 +244,29 @@
         </div>
       </div>
     </footer>
+
+    <!-- Store selection modal -->
+    <div class="modal-overlay" id="store-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="store-modal-title" hidden>
+      <div class="store-modal">
+        <button class="store-modal__close" id="store-modal-close" type="button" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <h2 class="store-modal__title" id="store-modal-title">Select a store near you</h2>
+        <div class="store-modal__location-wrap">
+          <input class="store-modal__location-input" id="store-modal-location" type="text" placeholder="Enter city or zip code" autocomplete="off" />
+          <button class="store-modal__location-btn" type="button" aria-label="Use my location">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="store-modal__list" id="store-modal-list" hidden></div>
+        <button class="store-modal__apply" id="store-modal-apply" type="button">Apply</button>
+      </div>
+    </div>
 
     <script src="./script.js"></script>
   </body>

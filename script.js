@@ -576,7 +576,7 @@ function renderCatalog() {
   });
 
   resultsCount.textContent = String(visibleProducts.length);
-  emptyState.hidden = visibleProducts.length > 0;
+  if (emptyState) emptyState.hidden = visibleProducts.length > 0;
   row.hidden = visibleProducts.length === 0;
 
   updateCompareAvailability();
@@ -725,3 +725,127 @@ window.addEventListener('resize', () => {
 
 syncFilterUi();
 renderCatalog();
+
+// ─── Filter group collapse/expand ─────────────────────────────────────────
+
+document.getElementById('filters-panel').addEventListener('click', (event) => {
+  const header = event.target.closest('.filter-group__header');
+  if (!header) return;
+
+  const section = header.closest('.filter-group');
+  const isOpen = section.classList.contains('filter-group--open');
+  const symbol = header.querySelector('.filter-group__symbol');
+
+  section.classList.toggle('filter-group--open', !isOpen);
+  header.setAttribute('aria-expanded', String(!isOpen));
+  if (symbol) symbol.textContent = isOpen ? '+' : '−';
+});
+
+// ─── Store selection modal ────────────────────────────────────────────────
+
+const STORES = [
+  { id: 'gogo-gone', name: 'GoGo Gone', distance: '0.8 miles' },
+  { id: 'nyc-velo-eastside', name: 'NYC Velo Eastside', distance: '1.3 miles' },
+  { id: 'giant-jersey-city', name: 'Giant Jersy City - Grove Street Bicycles', distance: '2.2 miles' },
+  { id: 'central-park-bikes', name: 'Central Park Bikes', distance: '2.3 miles' },
+  { id: 'brooklyn-bridge-cycles', name: 'Brooklyn Bridge Cycles', distance: '2.6 miles' },
+  { id: 'times-square-bikes', name: 'Times Square Bikes', distance: '2.7 miles' },
+  { id: 'wall-street-wheels', name: 'Wall Street Wheels', distance: '3.0 miles' },
+  { id: 'harlem-pedals', name: 'Harlem Pedals', distance: '3.2 miles' },
+  { id: 'chelsea-cycle-shop', name: 'Chelsea Cycle Shop', distance: '3.2 miles' },
+  { id: 'soho-spin-bikes', name: 'SoHo Spin Bikes', distance: '3.7 miles' },
+];
+
+const storeModalOverlay = document.getElementById('store-modal-overlay');
+const storeModalClose = document.getElementById('store-modal-close');
+const storeModalLocation = document.getElementById('store-modal-location');
+const storeModalList = document.getElementById('store-modal-list');
+const storeModalApply = document.getElementById('store-modal-apply');
+const openStoreModalBtn = document.getElementById('open-store-modal');
+const storePills = document.getElementById('store-pills');
+const storesLabel = document.querySelector('.availability-stores-btn__label');
+
+let selectedStoreIds = new Set();
+let pendingStoreIds = new Set();
+
+function openStoreModal() {
+  pendingStoreIds = new Set(selectedStoreIds);
+  storeModalOverlay.hidden = false;
+  storeModalLocation.focus();
+  renderModalList();
+}
+
+function closeStoreModal() {
+  storeModalOverlay.hidden = true;
+}
+
+function renderModalList() {
+  const hasLocation = storeModalLocation.value.trim().length > 0;
+  storeModalList.hidden = !hasLocation;
+  if (!hasLocation) return;
+
+  storeModalList.innerHTML = STORES.map((store) => `
+    <label class="store-modal__item">
+      <span class="compare-toggle__box">
+        <input class="store-modal__item-checkbox" type="checkbox" value="${store.id}" ${pendingStoreIds.has(store.id) ? 'checked' : ''} />
+        <span class="checkbox-ui" aria-hidden="true"></span>
+      </span>
+      <span class="store-modal__item-name">${store.name}</span>
+      <span class="store-modal__item-distance">${store.distance}</span>
+    </label>
+  `).join('');
+
+  storeModalList.querySelectorAll('.store-modal__item-checkbox').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) pendingStoreIds.add(cb.value);
+      else pendingStoreIds.delete(cb.value);
+    });
+  });
+}
+
+function applyStoreSelection() {
+  selectedStoreIds = new Set(pendingStoreIds);
+  renderStorePills();
+  updateStoresLabel();
+  closeStoreModal();
+}
+
+function renderStorePills() {
+  if (selectedStoreIds.size === 0) {
+    storePills.hidden = true;
+    return;
+  }
+  storePills.hidden = false;
+  storePills.innerHTML = Array.from(selectedStoreIds).map((id) => {
+    const store = STORES.find((s) => s.id === id);
+    if (!store) return '';
+    return `<span class="store-pill"><span>${store.name}</span><button class="store-pill__remove" type="button" data-store-id="${id}" aria-label="Remove ${store.name}">&times;</button></span>`;
+  }).join('');
+
+  storePills.querySelectorAll('.store-pill__remove').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      selectedStoreIds.delete(btn.dataset.storeId);
+      renderStorePills();
+      updateStoresLabel();
+    });
+  });
+}
+
+function updateStoresLabel() {
+  if (!storesLabel) return;
+  const n = selectedStoreIds.size;
+  storesLabel.textContent = n === 0 ? 'All stores' : `${n} store${n > 1 ? 's' : ''} selected`;
+}
+
+openStoreModalBtn.addEventListener('click', openStoreModal);
+storeModalClose.addEventListener('click', closeStoreModal);
+storeModalApply.addEventListener('click', applyStoreSelection);
+storeModalLocation.addEventListener('input', renderModalList);
+
+storeModalOverlay.addEventListener('click', (event) => {
+  if (event.target === storeModalOverlay) closeStoreModal();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !storeModalOverlay.hidden) closeStoreModal();
+});
