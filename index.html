@@ -3,36 +3,213 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Giant Product Card Row</title>
+    <title>Giant PLP Prototype</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Overpass:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Overpass:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="page-shell">
-      <div class="plp-tabs" role="tablist" aria-label="Product category">
-        <button class="plp-tab is-active" id="tab-bikes" type="button" role="tab" aria-selected="true" aria-controls="card-row" data-tab="bikes">
-          Bikes
-        </button>
-        <button class="plp-tab" id="tab-wheel-systems" type="button" role="tab" aria-selected="false" aria-controls="card-row" data-tab="wheel-systems">
-          WheelSystems
-        </button>
-        <button class="plp-tab" id="tab-tires" type="button" role="tab" aria-selected="false" aria-controls="card-row" data-tab="tires">
-          Tires
-        </button>
-        <button class="plp-tab" id="tab-helmets" type="button" role="tab" aria-selected="false" aria-controls="card-row" data-tab="helmets">
-          Helmets
-        </button>
-        <button class="plp-tab" id="tab-apparel" type="button" role="tab" aria-selected="false" aria-controls="card-row" data-tab="apparel">
-          Apparel
-        </button>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <div class="site-header__left">
+          <button class="header-icon-button header-icon-button--burger" type="button" aria-label="Open menu">
+            <img class="header-icon-button__asset header-icon-button__asset--burger" src="./burger-icon.svg" alt="" />
+          </button>
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/">Bikes</a>
+            <a href="/">Gear</a>
+            <a href="/">Discover</a>
+            <a href="/">Clearance Sale</a>
+            <a href="/">Find a store</a>
+          </nav>
+        </div>
+
+        <a class="brand-mark" href="/" aria-label="Giant home">
+          <img class="brand-mark__asset" src="./giant-signature.svg" alt="Giant" />
+        </a>
+
+        <div class="site-header__right">
+          <button class="header-search" type="button" aria-label="Search">
+            <img class="header-search__asset" src="./search-icon.svg" alt="" />
+            <span>Search</span>
+          </button>
+          <button class="header-icon-button" type="button" aria-label="Account">
+            <img class="header-icon-button__asset header-icon-button__asset--profile" src="./profile-icon.svg" alt="" />
+          </button>
+          <button class="header-cart" type="button" aria-label="Cart with 1 item">
+            <img class="header-cart__asset" src="./cart-icon.svg" alt="" />
+            <span class="header-cart__count">1</span>
+          </button>
+        </div>
       </div>
-      <section class="card-row" id="card-row"></section>
+    </header>
+
+    <main class="search-page">
+      <section class="search-page__hero" aria-labelledby="results-title">
+        <div class="results-heading">
+          <h1 class="results-title" id="results-title">Bikes</h1>
+          <p class="results-count"><span id="results-count">0</span> products</p>
+        </div>
+
+        <div class="results-actions" aria-label="Search results actions">
+          <button class="results-action" id="filters-toggle" type="button" aria-pressed="true">
+            <span id="filters-toggle-label">Hide filters</span>
+            <span class="results-action__icon" aria-hidden="true">
+              <img class="results-action__asset" src="./filter-icon.svg" alt="" />
+            </span>
+          </button>
+
+          <label class="sort-control" for="sort-select">
+            <span class="sort-control__label">Sort by:</span>
+            <span class="sort-control__select-wrap">
+              <select id="sort-select" aria-label="Sort products">
+                <option value="featured">Featured</option>
+                <option value="price-low">Price: low to high</option>
+                <option value="price-high">Price: high to low</option>
+              </select>
+              <span class="sort-control__icon" aria-hidden="true">
+                <img class="sort-control__asset" src="./chevron-down.svg" alt="" />
+              </span>
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <section class="search-page__content" id="search-content">
+        <aside class="filters-panel" id="filters-panel" aria-label="Product filters">
+          <section class="filter-group filter-group--open">
+            <div class="filter-group__header">
+              <h2 class="filter-group__title">Availability</h2>
+              <span class="filter-group__symbol" aria-hidden="true">-</span>
+            </div>
+
+            <div class="filter-group__body">
+              <label class="switch-field">
+                <input id="availability-toggle" type="checkbox" />
+                <span class="switch-ui" aria-hidden="true">
+                  <span class="switch-ui__thumb"></span>
+                </span>
+                <span class="switch-field__label">Available near me</span>
+              </label>
+
+              <div class="availability-details" id="availability-details" hidden>
+                <label class="location-field">
+                  <span class="sr-only">Enter location</span>
+                  <input id="location-input" type="text" placeholder="Enter location" autocomplete="postal-code" />
+                  <span class="location-field__actions" aria-hidden="true">
+                    <span class="location-field__icon">
+                      <img class="location-field__asset location-field__asset--location" src="./location-icon.svg" alt="" />
+                    </span>
+                    <span class="location-field__divider"></span>
+                    <span class="location-field__icon">
+                      <img class="location-field__asset location-field__asset--search" src="./search-small-icon.svg" alt="" />
+                    </span>
+                  </span>
+                </label>
+
+                <p class="availability-helper" id="availability-helper" role="status" hidden>
+                  Enter ZIP code or city to see nearby availability.
+                </p>
+
+                <div class="distance-filter" id="distance-filter" hidden>
+                  <div class="distance-filter__row">
+                    <label class="distance-filter__label" for="distance-range">Distance</label>
+                    <output class="distance-filter__value" id="distance-output" for="distance-range">100 miles away</output>
+                  </div>
+                  <input id="distance-range" type="range" min="10" max="100" step="5" value="100" />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Size</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Best for</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Sale</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Price range</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Color</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Frame material</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Brake type</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+
+          <section class="filter-group">
+            <div class="filter-group__header filter-group__header--compact">
+              <h2 class="filter-group__title">Seatpost type</h2>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
+            </div>
+          </section>
+        </aside>
+
+        <section class="products-area" aria-label="Products">
+          <div class="products-grid" id="products-grid"></div>
+
+          <div class="empty-state" id="empty-state" hidden>
+            <h2>No bikes match that availability range.</h2>
+            <p>Try widening the distance or turning off the availability filter.</p>
+          </div>
+        </section>
+      </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div>
+          <p class="site-footer__eyebrow">Prototype</p>
+          <p class="site-footer__title">Giant PLP layout study</p>
+        </div>
+        <div>
+          <p class="site-footer__eyebrow">Focus</p>
+          <p class="site-footer__copy">Desktop-first page shell with bike product tiles and an availability-first filter model.</p>
+        </div>
+        <div>
+          <p class="site-footer__eyebrow">Next</p>
+          <p class="site-footer__copy">We can wire the rest of the filter rail once the availability interaction feels right.</p>
+        </div>
+      </div>
+    </footer>
 
     <script src="./script.js"></script>
   </body>

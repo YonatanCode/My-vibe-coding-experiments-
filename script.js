@@ -1,5 +1,7 @@
 const bikesProducts = [
   {
+    id: 'talon-2',
+    availabilityMiles: 18,
     title: 'Talon 2',
     url: 'https://www.giant-bicycles.com/us/talon-2-2025',
     description:
@@ -44,6 +46,8 @@ const bikesProducts = [
     ]
   },
   {
+    id: 'anthem-advanced-sl-frameset',
+    availabilityMiles: 62,
     title: 'Anthem Advanced SL Frameset',
     url: 'https://www.giant-bicycles.com/us/anthem-advanced-sl-frameset',
     description:
@@ -71,6 +75,8 @@ const bikesProducts = [
     ]
   },
   {
+    id: 'anthem-x-advanced-sl-1',
+    availabilityMiles: 95,
     title: 'Anthem X Advanced SL 1',
     url: 'https://www.giant-bicycles.com/us/anthem-x-advanced-sl-1',
     description:
@@ -101,6 +107,8 @@ const bikesProducts = [
     ]
   },
   {
+    id: 'xtc-advanced-29-1',
+    availabilityMiles: 34,
     title: 'XTC Advanced 29 1',
     url: 'https://www.giant-bicycles.com/us/xtc-advanced-29-1',
     description:
@@ -127,6 +135,8 @@ const bikesProducts = [
     ]
   },
   {
+    id: 'anthem-x-advanced-sl-2',
+    availabilityMiles: 77,
     title: 'Anthem X Advanced SL 2',
     url: 'https://www.giant-bicycles.com/us/anthem-x-advanced-sl-2',
     description:
@@ -154,357 +164,35 @@ const bikesProducts = [
   }
 ];
 
-function createGearImage(label, accent, secondaryAccent = accent) {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="936" height="624" viewBox="0 0 936 624">
-      <rect width="936" height="624" rx="36" fill="#ffffff"/>
-      <rect x="128" y="112" width="680" height="400" rx="32" fill="#f8f8fa" stroke="#dedee0" stroke-width="10"/>
-      <rect x="184" y="168" width="568" height="288" rx="24" fill="${accent}" opacity="0.12"/>
-      <circle cx="256" cy="312" r="76" fill="${accent}" opacity="0.22"/>
-      <circle cx="680" cy="312" r="76" fill="${secondaryAccent}" opacity="0.22"/>
-      <rect x="280" y="246" width="376" height="132" rx="24" fill="#ffffff"/>
-      <text x="468" y="302" text-anchor="middle" font-family="Open Sans, Arial, sans-serif" font-size="34" font-weight="700" fill="#111111">${label}</text>
-      <text x="468" y="350" text-anchor="middle" font-family="Open Sans, Arial, sans-serif" font-size="24" fill="#58626e">GIANT GEAR</text>
-    </svg>
-  `;
+const row = document.getElementById('products-grid');
+const emptyState = document.getElementById('empty-state');
+const resultsCount = document.getElementById('results-count');
+const searchContent = document.getElementById('search-content');
+const filtersToggleButton = document.getElementById('filters-toggle');
+const filtersToggleLabel = document.getElementById('filters-toggle-label');
+const availabilityToggle = document.getElementById('availability-toggle');
+const availabilityDetails = document.getElementById('availability-details');
+const locationInput = document.getElementById('location-input');
+const availabilityHelper = document.getElementById('availability-helper');
+const distanceFilter = document.getElementById('distance-filter');
+const distanceRange = document.getElementById('distance-range');
+const distanceOutput = document.getElementById('distance-output');
+const sortSelect = document.getElementById('sort-select');
 
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
-}
-
-const gearProducts = [
-  {
-    catalog: 'wheel-systems',
-    title: 'CXR X1',
-    url: 'https://www.giant-bicycles.com/us/cxr-x1-2023',
-    description:
-      'A lightweight carbon wheel option built for gravel speed, responsive handling, and confident mixed-terrain control.',
-    price: {
-      mode: 'discount',
-      amount: '$660',
-      oldAmount: '$1,100'
-    },
-    secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options',
-    tag: {
-      type: 'new',
-      label: 'New'
-    },
-    selectorType: 'variants',
-    variants: [
-      {
-        key: 'front',
-        label: 'Front',
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/wsmr1wm4rliqbca7wp6w/GIANT-CXR-X1-HOOKLESS-DB-FW-350000307-1.jpg'
-        ],
-        price: {
-          mode: 'discount',
-          amount: '$660',
-          oldAmount: '$1,100'
-        },
-        secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options'
-      },
-      {
-        key: 'rear-hg',
-        label: 'Rear HG',
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xevhtoiwixxqyra4xtqz/GIANT-CXR-X1-HOOKLESS-DB-RW-350000325-1.jpg'
-        ],
-        price: {
-          mode: 'discount',
-          amount: '$660',
-          oldAmount: '$1,100'
-        },
-        secondary: 'MSRP excluding sales tax, shipping & handling, and dealer-installed options'
-      }
-    ]
-  },
-  {
-    catalog: 'wheel-systems',
-    title: 'SLR 1 42 Front Wheel',
-    url: 'https://www.giant-bicycles.com/us/slr-1-42-front-wheel-2021',
-    description:
-      'A lightweight carbon road wheel built for efficient acceleration, steady handling, and all-around speed on varied terrain.',
-    price: {
-      mode: 'regular',
-      amount: '$685'
-    },
-    tag: null,
-    images: [
-      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/jz4qlmoxiwj3hy4jfu5z/SLR-1-42-FW_1.jpg',
-      'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/tx9n1ofgwccmvm5qytf1/SLR-1-42-FW_2.jpg'
-    ]
-  },
-  {
-    catalog: 'tires',
-    title: 'Maxxis Minion DHF Mountain Bike Tire',
-    url: 'https://www.giant-bicycles.com/us/maxxis-minion-dhf-mountain-bike-tire-2023',
-    description:
-      'A benchmark trail tire built to balance rolling speed with strong braking bite and confident cornering traction.',
-    price: {
-      mode: 'from-discount',
-      amount: '$42',
-      oldAmount: '$105'
-    },
-    secondary:
-      'MSRP excluding sales tax, shipping & handling, destination fees, e-bike battery recycling fees and dealer-installed options. Dealer prices and fees may vary.',
-    tag: {
-      type: 'sale',
-      label: 'Save 60%'
-    },
-    colors: [
-      {
-        key: 'tan-wall',
-        label: 'Tan Wall',
-        colors: ['#1f1f21', '#b98d62'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/nm6xmgxfkxteh0j2oye4/Minion-DHF-3Q-Tanwall.jpg'
-        ]
-      },
-      {
-        key: 'black',
-        label: 'Black',
-        colors: ['#0f0f10'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/wv5ruvra3vqz9lsdtd5c/Minion-DHF-3Q.jpg'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'tires',
-    title: 'Vittoria Mezcal XC Race',
-    url: 'https://www.giant-bicycles.com/us/vittoria-mezcal-xc-race',
-    description:
-      'A fast-rolling XC race tire tuned for low drag, reliable grip, and efficient speed across hardpack and mixed trails.',
-    price: {
-      mode: 'regular',
-      amount: '$103.99'
-    },
-    tag: null,
-    colors: [
-      {
-        key: 'black',
-        label: 'Black',
-        colors: ['#111111'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/pxf5pdtvcs6v8uv316jv/MezcalXCRace_SideBlack.png'
-        ]
-      },
-      {
-        key: 'brown-black',
-        label: 'Brown / Black',
-        colors: ['#181818', '#8a684d'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/mgyznc8seyqrui5q2xqd/Mezcal-XC-RaceSideTan.png'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'helmets',
-    title: 'Rev Pro Mips Helmet',
-    url: 'https://www.giant-bicycles.com/us/rev-pro-mips-helmet-2026',
-    description:
-      'A high-performance road helmet shaped for cooling airflow, aero efficiency, and confident protection on demanding rides.',
-    price: {
-      mode: 'regular',
-      amount: '$300'
-    },
-    tag: null,
-    colors: [
-      {
-        key: 'matte-black',
-        label: 'Matte Black',
-        colors: ['#161616'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xz2idjnmjvdzff34675o/GIANTREVPROMIPSMATTEBLACK80000300380000300480000300580000300680000300780000300801.png'
-        ]
-      },
-      {
-        key: 'matte-white',
-        label: 'Matte White',
-        colors: ['#d9dce1'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/u1qpez0njc9tjoooscq6/GIANTREVPROMIPSMATTEWHITE800003009800003010800003011800003012800003013800003014011.png'
-        ]
-      },
-      {
-        key: 'matte-grey',
-        label: 'Matte Grey',
-        colors: ['#8e9197'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/xyyoixnrlztvufvrorvr/GIANTREVPROMIPSMATTEGRAY80000302180000302280000302380000302480000302580000302601.png'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'helmets',
-    title: 'Rev Elite',
-    url: 'https://www.giant-bicycles.com/us/rev-elite',
-    description:
-      'A lightweight road helmet that blends modern ventilation, secure fit, and everyday race-inspired comfort.',
-    price: {
-      mode: 'regular',
-      amount: '$190'
-    },
-    tag: null,
-    colors: [
-      {
-        key: 'gloss-panther-black',
-        label: 'Gloss Panther Black',
-        colors: ['#141414'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/juvwgh6tirtityswqtjg/_44A0579.jpg'
-        ]
-      },
-      {
-        key: 'matte-white-silver',
-        label: 'Matte White / Silver',
-        colors: ['#f1f1ef', '#c9cbcf'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/hbb551kimjfdtavdoddi/_44A0775.jpg'
-        ]
-      },
-      {
-        key: 'gloss-ultra-navy',
-        label: 'Gloss Ultra Navy',
-        colors: ['#3817a1'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/u84hid0ebypbcykgow3v/_44A0635.jpg'
-        ]
-      },
-      {
-        key: 'matte-castle-rock',
-        label: 'Matte Castle Rock',
-        colors: ['#777777', '#373737'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/mntzb9tupw70apvoebtn/_44A0759.jpg'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'helmets',
-    title: 'Path MIPS Mens Helmet',
-    url: 'https://www.giant-bicycles.com/us/path-mips-mens-helmet-2022',
-    description:
-      'A versatile everyday helmet designed for comfortable ventilation, extended coverage, and relaxed all-ride confidence.',
-    price: {
-      mode: 'from',
-      amount: '$45'
-    },
-    tag: null,
-    colors: [
-      {
-        key: 'matte-metal',
-        label: 'Matte Metal',
-        colors: ['#bfbca0', '#f1f1ee'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/egqly3zyprstqtk6ly3k/PATH-MIPS-MATTE-METAL-TOPO-800002477-800002478.jpg'
-        ]
-      },
-      {
-        key: 'black-blue',
-        label: 'Black / Blue',
-        colors: ['#101113', '#3f78e8'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/egqly3zyprstqtk6ly3k/PATH-MIPS-MATTE-METAL-TOPO-800002477-800002478.jpg'
-        ]
-      },
-      {
-        key: 'matte-phantom-green',
-        label: 'Matte Phantom Green',
-        colors: ['#687867'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/bpaombjbeu3nfnlbjkmm/PATH-MIPS-PHANTOM-GREEN-TOPO-800002479-800002480.jpg'
-        ]
-      },
-      {
-        key: 'matte-panther-black',
-        label: 'Matte Panther Black',
-        colors: ['#151515'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/zlmynwhvmwqyd2comfmy/PATH-MIPS-PANTHER-BLACK-TOPO-800002483-800002484.jpg'
-        ]
-      },
-      {
-        key: 'matte-white',
-        label: 'Matte White',
-        colors: ['#e8eaee'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/pgudxhqhociblrksbbxy/PATH-MIPS-MATTE-WHITE-800002570-800002571-800002599-800002500.jpg'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'apparel',
-    title: 'Transcend Mens Baggy Short',
-    url: 'https://www.giant-bicycles.com/us/transcend-mens-baggy-short',
-    description:
-      'A relaxed riding short with stretch fabric, adjustable fit, and everyday utility for trail or gravel sessions.',
-    price: {
-      mode: 'regular',
-      amount: '$44.99'
-    },
-    tag: null,
-    colors: [
-      {
-        key: 'blue',
-        label: 'Blue',
-        colors: ['#2e58a6'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/trjofjdvjte83mpzpr53/16364-68.jpg'
-        ]
-      }
-    ]
-  },
-  {
-    catalog: 'apparel',
-    title: 'Giant Factory Off Road Team Replica XC Bib Short',
-    url: 'https://www.giant-bicycles.com/us/giant-factory-off-road-team-replica-xc-bib-short-2024',
-    description:
-      'A pro-inspired XC bib short combining race-ready compression, breathable support, and long-ride comfort.',
-    price: {
-      mode: 'regular',
-      amount: '$175'
-    },
-    tag: {
-      type: 'best-seller',
-      label: 'Online Exclusive'
-    },
-    colors: [
-      {
-        key: 'black',
-        label: 'Black',
-        colors: ['#111111'],
-        images: [
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/spxe5kwyyyqnm6riyuos/GIANTGFORTREPLICAXCBIBSHORT@BLACKFRONT@860002661;860002662;860002663;860002664;860002665;860002666.jpg',
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/okg0urbv6rn3u7cug2im/GIANTGFORTREPLICAXCBIBSHORT@BLACKREAR@860002661;860002662;860002663;860002664;860002665;860002666.jpg'
-        ]
-      }
-    ]
-  }
-];
-
-const row = document.getElementById('card-row');
-const tabs = Array.from(document.querySelectorAll('.plp-tab'));
+const AVAILABILITY_DISTANCE_MIN = 0;
+const AVAILABILITY_DISTANCE_STEP = 1;
 const MAX_COMPARE_ITEMS = 3;
 const TOUCH_QUERY = '(hover: none), (pointer: coarse)';
 const PRICE_DISCLAIMER = '0% APR Finance';
-const wheelSystemsProducts = gearProducts.filter((product) => product.catalog === 'wheel-systems');
-const tiresProducts = gearProducts.filter((product) => product.catalog === 'tires');
-const helmetsProducts = gearProducts.filter((product) => product.catalog === 'helmets');
-const apparelProducts = gearProducts.filter((product) => product.catalog === 'apparel');
-const catalogs = {
-  bikes: bikesProducts,
-  'wheel-systems': wheelSystemsProducts,
-  tires: tiresProducts,
-  helmets: helmetsProducts,
-  apparel: apparelProducts
+const compareSelection = new Set();
+
+const state = {
+  filtersVisible: true,
+  availabilityOnly: false,
+  locationQuery: locationInput.value,
+  maxDistance: getAvailabilityDistanceConfig().defaultDistance,
+  sortBy: sortSelect.value
 };
-let activeCatalogKey = 'bikes';
 
 function isTouchInteractionMode() {
   return window.matchMedia(TOUCH_QUERY).matches;
@@ -516,33 +204,19 @@ function createSwatch(color, selected, onSelect) {
   button.className = `swatch${selected ? ' is-selected' : ''}`;
   const [colorA, colorB] = color.colors;
   button.style.setProperty('--swatch-color-a', colorA);
+
   if (colorB) {
     button.style.setProperty('--swatch-color-b', colorB);
   } else {
     button.style.removeProperty('--swatch-color-b');
   }
+
   button.setAttribute('aria-label', color.label);
   button.setAttribute('aria-pressed', String(selected));
   button.addEventListener('click', (event) => {
     event.preventDefault();
     event.stopPropagation();
     onSelect(color.key);
-    button.blur();
-    document.activeElement?.blur?.();
-  });
-  return button;
-}
-
-function createVariantPill(variant, selected, onSelect) {
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = `variant-pill${selected ? ' is-selected' : ''}`;
-  button.innerHTML = `<span class="variant-pill__label">${variant.label}</span>`;
-  button.setAttribute('aria-pressed', String(selected));
-  button.addEventListener('click', (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    onSelect(variant.key);
     button.blur();
     document.activeElement?.blur?.();
   });
@@ -624,6 +298,45 @@ function renderSecondaryMarkup(product) {
   `;
 }
 
+function getAvailabilityDistances(products = bikesProducts) {
+  return products
+    .map((product) => Number(product.availabilityMiles))
+    .filter(Number.isFinite)
+    .sort((a, b) => a - b);
+}
+
+function getAvailabilityDistanceConfig(products = bikesProducts) {
+  const distances = getAvailabilityDistances(products);
+
+  if (!distances.length) {
+    return {
+      defaultDistance: AVAILABILITY_DISTANCE_MIN,
+      maxDistance: AVAILABILITY_DISTANCE_MIN
+    };
+  }
+
+  const defaultDistance = distances[Math.min(2, distances.length - 1)];
+  const furthestDistance = distances[distances.length - 1];
+
+  return {
+    defaultDistance,
+    maxDistance: Math.max(defaultDistance, Math.ceil(furthestDistance * 1.5))
+  };
+}
+
+function hasAvailabilityLocation() {
+  return state.locationQuery.trim().length > 0;
+}
+
+function isAvailabilityFilterActive() {
+  return state.availabilityOnly && hasAvailabilityLocation();
+}
+
+function initializeAvailabilityDistance() {
+  const { defaultDistance } = getAvailabilityDistanceConfig();
+  state.maxDistance = defaultDistance;
+}
+
 function renderTagMarkup(tag) {
   if (!tag) {
     return '';
@@ -635,9 +348,8 @@ function renderTagMarkup(tag) {
 function createCard(product) {
   const article = document.createElement('article');
   article.className = 'product-card has-hover-media';
+  article.dataset.productId = product.id;
   article.setAttribute('aria-label', `${product.title} product tile`);
-  const showCompare = activeCatalogKey === 'bikes';
-  const showDescription = activeCatalogKey === 'bikes';
 
   article.innerHTML = `
     <a class="product-card__link" href="${product.url}" aria-label="Open ${product.title} product page"></a>
@@ -652,25 +364,23 @@ function createCard(product) {
       </div>
     </div>
     <div class="product-card__topline">
-      <div class="selector-group" aria-label="Available options"></div>
-      ${showCompare ? `
+      <div class="selector-group" aria-label="Available colors"></div>
       <label class="compare-toggle">
         <span>Compare</span>
         <span class="compare-toggle__box">
-          <input type="checkbox" name="compare" />
+          <input type="checkbox" name="compare" data-product-id="${product.id}" ${compareSelection.has(product.id) ? 'checked' : ''} />
           <span class="checkbox-ui" aria-hidden="true"></span>
           <span class="compare-tooltip" role="tooltip">
             You can compare up to 3 products. Deselect one to add this item.
           </span>
         </span>
       </label>
-      ` : '<span class="compare-toggle compare-toggle--ghost" aria-hidden="true"></span>'}
     </div>
     <div class="product-card__copy">
       <a class="product-card__text-link" href="${product.url}" aria-label="Read more about ${product.title}">
         <div class="title-group">
           <h2 class="product-title">${product.title}</h2>
-          ${showDescription ? `<p class="product-description">${product.description}</p>` : ''}
+          <p class="product-description">${product.description}</p>
         </div>
       </a>
       <div class="product-card__pricing">
@@ -683,12 +393,9 @@ function createCard(product) {
   const selectorGroup = article.querySelector('.selector-group');
   const mainImage = article.querySelector('.product-card__image');
   const hoverImage = article.querySelector('.product-card__hover-image');
-  const pricingContainer = article.querySelector('.product-card__pricing');
 
   function applySelection(optionKey) {
-    const usesVariants = product.selectorType === 'variants';
-    const entries = usesVariants ? product.variants : product.colors;
-    const selectedEntry = entries.find((entry) => entry.key === optionKey) || entries[0];
+    const selectedEntry = product.colors.find((entry) => entry.key === optionKey) || product.colors[0];
     const [primaryImage, secondaryImage] = selectedEntry.images;
 
     mainImage.src = primaryImage;
@@ -704,16 +411,6 @@ function createCard(product) {
       article.classList.remove('has-hover-media');
     }
 
-    if (usesVariants) {
-      pricingContainer.innerHTML = `
-        ${renderPriceMarkup(selectedEntry.price || product.price)}
-        ${renderSecondaryMarkup({
-          secondary: selectedEntry.secondary || product.secondary,
-          disclaimers: selectedEntry.disclaimers || product.disclaimers
-        })}
-      `;
-    }
-
     selectorGroup.querySelectorAll('button').forEach((button) => {
       const isSelected = button.dataset.option === selectedEntry.key;
       button.classList.toggle('is-selected', isSelected);
@@ -721,40 +418,6 @@ function createCard(product) {
     });
   }
 
-  if (product.selectorType === 'variants') {
-    selectorGroup.classList.add('selector-group--variants');
-    selectorGroup.setAttribute('aria-label', 'Available product variants');
-    product.variants.forEach((variant, index) => {
-      const pill = createVariantPill(variant, index === 0, applySelection);
-      pill.dataset.option = variant.key;
-      selectorGroup.appendChild(pill);
-    });
-    applySelection(product.variants[0].key);
-    return article;
-  }
-
-  if (!product.colors?.length) {
-    selectorGroup.classList.add('selector-group--ghost');
-
-    const [primaryImage, secondaryImage] = product.images || [];
-    mainImage.src = primaryImage;
-    mainImage.alt = product.title;
-
-    if (secondaryImage) {
-      hoverImage.src = secondaryImage;
-      hoverImage.alt = `${product.title} alternate view`;
-      article.classList.add('has-hover-media');
-    } else {
-      hoverImage.removeAttribute('src');
-      hoverImage.alt = '';
-      article.classList.remove('has-hover-media');
-    }
-
-    return article;
-  }
-
-  selectorGroup.classList.add('swatches');
-  selectorGroup.setAttribute('aria-label', 'Available colors');
   product.colors.forEach((color, index) => {
     const swatch = createSwatch(color, index === 0, applySelection);
     swatch.dataset.option = color.key;
@@ -765,16 +428,22 @@ function createCard(product) {
   return article;
 }
 
-function renderCatalog(catalogKey) {
-  activeCatalogKey = catalogKey;
-  row.innerHTML = '';
+function getFilteredProducts() {
+  let products = [...bikesProducts];
 
-  catalogs[catalogKey].forEach((product) => {
-    row.appendChild(createCard(product));
-  });
+  if (isAvailabilityFilterActive()) {
+    products = products.filter((product) => product.availabilityMiles <= state.maxDistance);
+  }
 
-  updateCompareAvailability();
-  updateTooltipEdgeAlignment();
+  if (state.sortBy === 'price-low') {
+    products.sort((a, b) => (parseCurrencyAmount(a.price.amount) || 0) - (parseCurrencyAmount(b.price.amount) || 0));
+  }
+
+  if (state.sortBy === 'price-high') {
+    products.sort((a, b) => (parseCurrencyAmount(b.price.amount) || 0) - (parseCurrencyAmount(a.price.amount) || 0));
+  }
+
+  return products;
 }
 
 function updateCompareAvailability() {
@@ -804,8 +473,8 @@ function updateTooltipEdgeAlignment() {
 
   cards.forEach((card) => {
     const top = Math.round(card.getBoundingClientRect().top);
-    const matches = Array.from(rows.keys()).find((value) => Math.abs(value - top) <= 2);
-    const rowKey = matches ?? top;
+    const match = Array.from(rows.keys()).find((value) => Math.abs(value - top) <= 2);
+    const rowKey = match ?? top;
 
     if (!rows.has(rowKey)) {
       rows.set(rowKey, []);
@@ -859,14 +528,114 @@ function showDisabledCompareTooltip(toggle) {
   positionCompareTooltip(toggle);
 }
 
-row.addEventListener('change', (event) => {
-  if (event.target.matches('input[name="compare"]')) {
-    updateCompareAvailability();
+function syncFilterUi() {
+  const { defaultDistance, maxDistance } = getAvailabilityDistanceConfig();
+  const distanceValue = state.maxDistance > 0 ? Math.min(state.maxDistance, maxDistance) : defaultDistance;
+  const distanceUnit = distanceValue === 1 ? 'mile' : 'miles';
+  const distanceLabel = `${distanceValue} ${distanceUnit} away`;
+  const hasLocation = hasAvailabilityLocation();
+  const shouldShowDistanceFilter = state.availabilityOnly && hasLocation;
+  const shouldShowAvailabilityHelper = state.availabilityOnly && !hasLocation;
 
-    if (isTouchInteractionMode()) {
-      event.target.blur();
-      document.activeElement?.blur?.();
+  state.maxDistance = distanceValue;
+  distanceRange.min = String(AVAILABILITY_DISTANCE_MIN);
+  distanceRange.max = String(maxDistance);
+  distanceRange.step = String(AVAILABILITY_DISTANCE_STEP);
+  distanceRange.value = String(distanceValue);
+  distanceRange.style.setProperty('--range-fill-percent', `${maxDistance > AVAILABILITY_DISTANCE_MIN ? (distanceValue / maxDistance) * 100 : 0}%`);
+  distanceOutput.value = distanceLabel;
+  distanceOutput.textContent = distanceLabel;
+  availabilityDetails.hidden = !state.availabilityOnly;
+  availabilityHelper.hidden = !shouldShowAvailabilityHelper;
+  distanceFilter.hidden = !shouldShowDistanceFilter;
+  distanceRange.disabled = !shouldShowDistanceFilter;
+  locationInput.disabled = !state.availabilityOnly;
+  if (shouldShowAvailabilityHelper) {
+    locationInput.setAttribute('aria-describedby', 'availability-helper');
+  } else {
+    locationInput.removeAttribute('aria-describedby');
+  }
+  filtersToggleLabel.textContent = state.filtersVisible ? 'Hide filters' : 'Show filters';
+  filtersToggleButton.setAttribute('aria-pressed', String(state.filtersVisible));
+  searchContent.classList.toggle('search-page__content--filters-hidden', !state.filtersVisible);
+}
+
+function renderCatalog() {
+  const visibleProducts = getFilteredProducts();
+  const visibleIds = new Set(visibleProducts.map((product) => product.id));
+
+  Array.from(compareSelection).forEach((id) => {
+    if (!visibleIds.has(id)) {
+      compareSelection.delete(id);
     }
+  });
+
+  row.innerHTML = '';
+  visibleProducts.forEach((product) => {
+    row.appendChild(createCard(product));
+  });
+
+  resultsCount.textContent = String(visibleProducts.length);
+  emptyState.hidden = visibleProducts.length > 0;
+  row.hidden = visibleProducts.length === 0;
+
+  updateCompareAvailability();
+  updateTooltipEdgeAlignment();
+}
+
+availabilityToggle.addEventListener('change', () => {
+  state.availabilityOnly = availabilityToggle.checked;
+  syncFilterUi();
+  renderCatalog();
+});
+
+locationInput.addEventListener('input', () => {
+  const locationWasEntered = hasAvailabilityLocation();
+  state.locationQuery = locationInput.value;
+
+  if (!locationWasEntered && hasAvailabilityLocation()) {
+    initializeAvailabilityDistance();
+  }
+
+  syncFilterUi();
+  renderCatalog();
+});
+
+distanceRange.addEventListener('input', () => {
+  state.maxDistance = Number(distanceRange.value);
+  syncFilterUi();
+  renderCatalog();
+});
+
+sortSelect.addEventListener('change', () => {
+  state.sortBy = sortSelect.value;
+  renderCatalog();
+});
+
+filtersToggleButton.addEventListener('click', () => {
+  state.filtersVisible = !state.filtersVisible;
+  syncFilterUi();
+  updateTooltipEdgeAlignment();
+});
+
+row.addEventListener('change', (event) => {
+  if (!event.target.matches('input[name="compare"]')) {
+    return;
+  }
+
+  const productId = event.target.dataset.productId;
+
+  if (event.target.checked) {
+    compareSelection.add(productId);
+  } else {
+    compareSelection.delete(productId);
+  }
+
+  updateCompareAvailability();
+
+  if (isTouchInteractionMode()) {
+    event.target.blur();
+    document.activeElement?.blur?.();
   }
 });
 
@@ -897,39 +666,55 @@ row.addEventListener('click', (event) => {
   showDisabledCompareTooltip(disabledToggle);
 });
 
-row.addEventListener('touchstart', (event) => {
-  if (event.target.closest('.compare-toggle.is-disabled')) {
+row.addEventListener(
+  'touchstart',
+  (event) => {
+    if (event.target.closest('.compare-toggle.is-disabled')) {
+      event.preventDefault();
+    }
+  },
+  { passive: false }
+);
+
+row.addEventListener(
+  'touchend',
+  (event) => {
+    const disabledToggle = event.target.closest('.compare-toggle.is-disabled');
+
+    if (!disabledToggle) {
+      return;
+    }
+
     event.preventDefault();
-  }
-}, { passive: false });
+    event.stopPropagation();
+    showDisabledCompareTooltip(disabledToggle);
+  },
+  { passive: false }
+);
 
-row.addEventListener('touchend', (event) => {
-  const disabledToggle = event.target.closest('.compare-toggle.is-disabled');
+row.addEventListener(
+  'mouseleave',
+  (event) => {
+    const toggle = event.target.closest('.compare-toggle.show-tooltip');
 
-  if (!disabledToggle) {
-    return;
-  }
+    if (toggle) {
+      toggle.classList.remove('show-tooltip');
+    }
+  },
+  true
+);
 
-  event.preventDefault();
-  event.stopPropagation();
-  showDisabledCompareTooltip(disabledToggle);
-}, { passive: false });
+row.addEventListener(
+  'mouseenter',
+  (event) => {
+    const toggle = event.target.closest('.compare-toggle.is-disabled');
 
-row.addEventListener('mouseleave', (event) => {
-  const toggle = event.target.closest('.compare-toggle.show-tooltip');
-
-  if (toggle) {
-    toggle.classList.remove('show-tooltip');
-  }
-}, true);
-
-row.addEventListener('mouseenter', (event) => {
-  const toggle = event.target.closest('.compare-toggle.is-disabled');
-
-  if (toggle) {
-    positionCompareTooltip(toggle);
-  }
-}, true);
+    if (toggle) {
+      positionCompareTooltip(toggle);
+    }
+  },
+  true
+);
 
 window.addEventListener('resize', updateTooltipEdgeAlignment);
 window.addEventListener('resize', () => {
@@ -938,25 +723,5 @@ window.addEventListener('resize', () => {
   });
 });
 
-updateCompareAvailability();
-updateTooltipEdgeAlignment();
-
-tabs.forEach((tab) => {
-  tab.addEventListener('click', () => {
-    const nextKey = tab.dataset.tab;
-
-    if (!nextKey || nextKey === activeCatalogKey) {
-      return;
-    }
-
-    tabs.forEach((entry) => {
-      const isActive = entry === tab;
-      entry.classList.toggle('is-active', isActive);
-      entry.setAttribute('aria-selected', String(isActive));
-    });
-
-    renderCatalog(nextKey);
-  });
-});
-
-renderCatalog(activeCatalogKey);
+syncFilterUi();
+renderCatalog();
