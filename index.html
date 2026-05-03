@@ -52,7 +52,15 @@
       <section class="search-page__hero" aria-labelledby="results-title">
         <div class="results-heading">
           <h1 class="results-title" id="results-title">Bikes</h1>
-          <p class="results-count"><span id="results-count">0</span> products</p>
+          <div class="results-meta">
+            <p class="results-count"><span id="results-count">0</span> products</p>
+            <div class="filters-panel__active-summary" id="filters-active-summary" hidden>
+              <span class="results-meta__separator" aria-hidden="true">|</span>
+              <p class="filters-panel__active-count" id="filters-active-count">0 active filters</p>
+              <span class="results-meta__separator" aria-hidden="true">|</span>
+              <button class="filters-panel__clear" id="clear-filters" type="button">Clear all filters</button>
+            </div>
+          </div>
         </div>
 
         <div class="results-actions" aria-label="Search results actions">
@@ -81,91 +89,132 @@
 
       <section class="search-page__content" id="search-content">
         <aside class="filters-panel" id="filters-panel" aria-label="Product filters">
+          <div class="filters-panel__groups">
 
           <!-- Availability: near me (toggle + distance) -->
-          <section class="filter-group filter-group--open">
-            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="true">
+          <section class="filter-group">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Availability</h2>
-              <span class="filter-group__symbol" aria-hidden="true">&#8722;</span>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
             <div class="filter-group__body">
-              <label class="switch-field">
-                <input id="availability-toggle" type="checkbox" />
-                <span class="switch-ui" aria-hidden="true">
-                  <span class="switch-ui__thumb"></span>
-                </span>
-                <span class="switch-field__label">Available near me</span>
-              </label>
+              <div class="filter-group__body-inner">
+                <label class="switch-field">
+                  <input id="availability-toggle" type="checkbox" />
+                  <span class="switch-ui" aria-hidden="true">
+                    <span class="switch-ui__thumb"></span>
+                  </span>
+                  <span class="switch-field__label">Available near me</span>
+                </label>
 
-              <div class="availability-details" id="availability-details" hidden>
-                <div class="location-field-wrap">
-                  <label class="location-field">
-                    <span class="sr-only">Enter location</span>
-                    <input id="location-input" type="text" placeholder="Enter location" autocomplete="off" aria-autocomplete="list" aria-controls="location-suggestions" aria-haspopup="listbox" />
-                    <span class="location-field__actions" aria-hidden="true">
-                      <span class="location-field__icon">
-                        <img class="location-field__asset location-field__asset--location" src="./location-icon.svg" alt="" />
+                <div class="availability-details" id="availability-details" hidden>
+                  <div class="location-field-wrap">
+                    <label class="location-field">
+                      <span class="sr-only">Enter location</span>
+                      <input id="location-input" type="text" placeholder="Enter location" autocomplete="off" aria-autocomplete="list" aria-controls="location-suggestions" aria-haspopup="listbox" />
+                      <span class="location-field__actions" aria-hidden="true">
+                        <span class="location-field__icon">
+                          <img class="location-field__asset location-field__asset--location" src="./location-icon.svg" alt="" />
+                        </span>
                       </span>
-                      <span class="location-field__divider"></span>
-                      <span class="location-field__icon">
-                        <img class="location-field__asset location-field__asset--search" src="./search-small-icon.svg" alt="" />
-                      </span>
-                    </span>
-                  </label>
-                  <ul class="location-suggestions" id="location-suggestions" role="listbox" aria-label="Location suggestions" hidden></ul>
-                </div>
-
-                <p class="availability-helper" id="availability-helper" role="status" hidden>
-                  Enter ZIP code or city to see nearby availability.
-                </p>
-
-                <div class="distance-filter" id="distance-filter" hidden>
-                  <div class="distance-filter__row">
-                    <label class="distance-filter__label" for="distance-range">Distance</label>
-                    <output class="distance-filter__value" id="distance-output" for="distance-range">100 miles away</output>
+                    </label>
+                    <ul class="location-suggestions" id="location-suggestions" role="listbox" aria-label="Location suggestions" hidden></ul>
                   </div>
-                  <input id="distance-range" type="range" min="10" max="100" step="5" value="100" />
-                  <button class="distance-filter__stores-link" id="show-stores-in-range" type="button">Show stores in range</button>
+
+                  <p class="availability-helper" id="availability-helper" role="status" hidden>
+                    Enter ZIP code or city to see nearby availability.
+                  </p>
+
+                  <div class="distance-filter" id="distance-filter" hidden>
+                    <div class="distance-filter__row">
+                      <label class="distance-filter__label" for="distance-range">Distance</label>
+                      <output class="distance-filter__value" id="distance-output" for="distance-range">100 miles away</output>
+                    </div>
+                    <input id="distance-range" type="range" min="10" max="100" step="5" value="100" />
+                    <button class="distance-filter__stores-link" id="show-stores-in-range" type="button">Show stores in range</button>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           <!-- Availability: store selector (new) -->
-          <section class="filter-group filter-group--open">
-            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="true">
+          <section class="filter-group">
+            <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Availability</h2>
-              <span class="filter-group__symbol" aria-hidden="true">&#8722;</span>
+              <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
             <div class="filter-group__body">
-              <button class="availability-stores-btn" id="open-store-modal" type="button">
-                <img src="./pin-icon.svg" class="availability-stores-btn__icon" alt="" />
-                <span class="availability-stores-btn__label">All stores</span>
-              </button>
-              <label class="filter-checkbox">
-                <span class="compare-toggle__box">
-                  <input type="checkbox" id="filter-instore-stock" />
-                  <span class="checkbox-ui" aria-hidden="true"></span>
-                </span>
-                <span class="filter-checkbox__label">In store stock</span>
-              </label>
-              <label class="filter-checkbox">
-                <span class="compare-toggle__box">
-                  <input type="checkbox" id="filter-available-pickup" />
-                  <span class="checkbox-ui" aria-hidden="true"></span>
-                </span>
-                <span class="filter-checkbox__label">Available for pickup</span>
-              </label>
-              <div class="store-pills" id="store-pills" hidden></div>
+              <div class="filter-group__body-inner">
+                <button class="availability-stores-btn" id="open-store-modal" type="button">
+                  <img src="./pin-icon.svg" class="availability-stores-btn__icon" alt="" />
+                  <span class="availability-stores-btn__label">All stores</span>
+                </button>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-instore-stock" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">In store stock</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-available-pickup" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Available for pickup</span>
+                </label>
+                <div class="store-pills" id="store-pills" hidden></div>
+              </div>
             </div>
           </section>
 
-          <section class="filter-group">
+          <section class="filter-group filter-group--size">
             <button class="filter-group__header filter-group__header--compact" type="button" aria-expanded="false">
               <h2 class="filter-group__title">Size</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <p class="size-filter__help">
+                  <span>What is my size?</span>
+                  <span class="size-filter__help-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" focusable="false">
+                      <circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+                      <circle cx="8" cy="4.75" r="1" fill="currentColor"></circle>
+                      <path d="M8 7.1V11.2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+                    </svg>
+                  </span>
+                </p>
+
+                <div class="size-filter__chip-grid" role="group" aria-label="Size options">
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-xs" />
+                    <span class="size-chip__label">XS</span>
+                  </label>
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-s" />
+                    <span class="size-chip__label">S</span>
+                  </label>
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-m" />
+                    <span class="size-chip__label">M</span>
+                  </label>
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-ml" />
+                    <span class="size-chip__label">ML</span>
+                  </label>
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-l" />
+                    <span class="size-chip__label">L</span>
+                  </label>
+                  <label class="size-chip">
+                    <input class="size-chip__input" type="checkbox" id="filter-size-xl" />
+                    <span class="size-chip__label">XL</span>
+                  </label>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -173,7 +222,38 @@
               <h2 class="filter-group__title">Best for</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-best-xc-racing" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">XC racing</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-best-fast-climbs" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Fast climbs</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-best-daily-trails" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Daily trails</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-best-bike-builds" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Custom bike builds</span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -181,7 +261,31 @@
               <h2 class="filter-group__title">Sale</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-sale-discounted" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">On sale</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-sale-new" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">New arrivals</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-sale-best-sellers" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Best sellers</span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -189,7 +293,23 @@
               <h2 class="filter-group__title">Price range</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <div class="price-range-filter" id="price-range-filter">
+                  <div class="price-range-filter__values">
+                    <span class="price-range-filter__value" id="price-min-output"></span>
+                    <span class="price-range-filter__value" id="price-max-output"></span>
+                  </div>
+                  <div class="price-range-filter__track-wrap">
+                    <div class="price-range-filter__track">
+                      <div class="price-range-filter__fill" id="price-range-fill"></div>
+                    </div>
+                    <input type="range" id="price-range-min" class="price-range-filter__input" aria-label="Minimum price" />
+                    <input type="range" id="price-range-max" class="price-range-filter__input" aria-label="Maximum price" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -197,7 +317,74 @@
               <h2 class="filter-group__title">Color</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body filter-group__body--color">
+              <div class="filter-group__body-inner">
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-black" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #000000;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Black</span>
+                    <span class="filter-color-option__count">(42)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-white" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #ffffff;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">White</span>
+                    <span class="filter-color-option__count">(38)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-red" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #c83317;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Red</span>
+                    <span class="filter-color-option__count">(24)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-blue" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #0050fc;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Blue</span>
+                    <span class="filter-color-option__count">(42)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-green" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #00a316;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Green</span>
+                    <span class="filter-color-option__count">(12)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-yellow" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #e0b400;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Yellow</span>
+                    <span class="filter-color-option__count">(8)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-orange" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #ec6046;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Orange</span>
+                    <span class="filter-color-option__count">(15)</span>
+                  </span>
+                </label>
+                <label class="filter-color-option">
+                  <input class="filter-color-option__input" type="checkbox" id="filter-color-grey" />
+                  <span class="filter-color-option__swatch" style="--filter-color-a: #58626e;" aria-hidden="true"></span>
+                  <span class="filter-color-option__text">
+                    <span class="filter-color-option__name">Grey</span>
+                    <span class="filter-color-option__count">(31)</span>
+                  </span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -205,7 +392,31 @@
               <h2 class="filter-group__title">Frame material</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-frame-aluminum" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">ALUXX aluminum</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-frame-composite" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Advanced composite</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-frame-sl-composite" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Advanced SL composite</span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -213,7 +424,31 @@
               <h2 class="filter-group__title">Brake type</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-brake-hydraulic-disc" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Hydraulic disc</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-brake-mechanical-disc" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Mechanical disc</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-brake-race-spec" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Race-spec braking</span>
+                </label>
+              </div>
+            </div>
           </section>
 
           <section class="filter-group">
@@ -221,8 +456,34 @@
               <h2 class="filter-group__title">Seatpost type</h2>
               <span class="filter-group__symbol" aria-hidden="true">+</span>
             </button>
-            <div class="filter-group__body"></div>
+            <div class="filter-group__body">
+              <div class="filter-group__body-inner">
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-seatpost-dropper" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Dropper seatpost</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-seatpost-standard" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Standard seatpost</span>
+                </label>
+                <label class="filter-checkbox">
+                  <span class="compare-toggle__box">
+                    <input type="checkbox" id="filter-seatpost-integrated" />
+                    <span class="checkbox-ui" aria-hidden="true"></span>
+                  </span>
+                  <span class="filter-checkbox__label">Integrated seat mast</span>
+                </label>
+              </div>
+            </div>
           </section>
+
+          </div>
 
         </aside>
 
@@ -235,23 +496,6 @@
         </section>
       </section>
     </main>
-
-    <footer class="site-footer">
-      <div class="site-footer__inner">
-        <div>
-          <p class="site-footer__eyebrow">Prototype</p>
-          <p class="site-footer__title">Giant PLP layout study</p>
-        </div>
-        <div>
-          <p class="site-footer__eyebrow">Focus</p>
-          <p class="site-footer__copy">Desktop-first page shell with bike product tiles and an availability-first filter model.</p>
-        </div>
-        <div>
-          <p class="site-footer__eyebrow">Next</p>
-          <p class="site-footer__copy">We can wire the rest of the filter rail once the availability interaction feels right.</p>
-        </div>
-      </div>
-    </footer>
 
     <!-- Stores in range modal -->
     <div class="modal-overlay" id="stores-range-overlay" role="dialog" aria-modal="true" aria-labelledby="stores-range-title" hidden>
