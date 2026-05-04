@@ -51,26 +51,25 @@
     <main class="search-page">
       <section class="search-page__hero" aria-labelledby="results-title">
         <div class="results-heading">
-          <h1 class="results-title" id="results-title">Bikes</h1>
-          <div class="results-meta">
-            <p class="results-count"><span id="results-count">0</span> products</p>
+          <h1 class="results-title" id="results-title">Mountain bikes</h1>
+          <div class="results-toolbar" aria-label="Search results actions">
+            <button class="results-action" id="filters-toggle" type="button" aria-pressed="true">
+              <span id="filters-toggle-label">Hide filters</span>
+              <span class="results-action__icon" aria-hidden="true">
+                <img class="results-action__asset" src="./filter-icon.svg" alt="" />
+              </span>
+            </button>
             <div class="filters-panel__active-summary" id="filters-active-summary" hidden>
               <span class="results-meta__separator" aria-hidden="true">|</span>
-              <p class="filters-panel__active-count" id="filters-active-count">0 active filters</p>
-              <span class="results-meta__separator" aria-hidden="true">|</span>
-              <button class="filters-panel__clear" id="clear-filters" type="button">Clear all filters</button>
+              <span class="filters-panel__active-count"><span class="filters-panel__active-count-value" id="filters-active-count">0</span></span>
+              <button class="filters-panel__clear" id="clear-filters" type="button" aria-label="Clear all filters">Clear all</button>
             </div>
           </div>
         </div>
 
-        <div class="results-actions" aria-label="Search results actions">
-          <button class="results-action" id="filters-toggle" type="button" aria-pressed="true">
-            <span id="filters-toggle-label">Hide filters</span>
-            <span class="results-action__icon" aria-hidden="true">
-              <img class="results-action__asset" src="./filter-icon.svg" alt="" />
-            </span>
-          </button>
-
+        <div class="results-meta">
+          <p class="results-count"><span id="results-count">0</span> products</p>
+          <span class="results-meta__separator" aria-hidden="true">|</span>
           <label class="sort-control" for="sort-select">
             <span class="sort-control__label">Sort by:</span>
             <span class="sort-control__select-wrap">

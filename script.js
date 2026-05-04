@@ -210,7 +210,7 @@ const bikesProducts = [
         colors: ['#C56539'],
         images: [
           'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/hpzpepwq3ygdeihzsalb/MY22Fathom292_ColorATerracotta.jpg',
-          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/m1pg0oixlwxtk5buyazi/MY22Fathom292_ColorATerracotta_Front.jpg'
+          'https://images2.giant-bicycles.com/b_white%2Cc_pad%2Ch_2000%2Cq_80/hpzpepwq3ygdeihzsalb/MY22Fathom292_ColorATerracotta.jpg'
         ]
       },
       {
@@ -297,9 +297,11 @@ const AWARD_BADGE_WHITE_THRESHOLD = 232;
 const AWARD_BADGE_NEUTRAL_TOLERANCE = 16;
 const MIN_SPLIT_SCROLL_HEIGHT = 320;
 const STICKY_SCROLL_TOLERANCE = 12;
+const PRODUCT_TILE_IMAGE_TRANSFORM = 'b_white%2Cc_pad%2Ch_600%2Cq_80%2Cw_800';
 const desktopSplitScrollQuery = window.matchMedia(DESKTOP_SPLIT_SCROLL_QUERY);
 const compareSelection = new Set();
 const transparentAwardBadgeCache = new Map();
+const productImagePreloadCache = new Map();
 let selectedStoreIds = new Set();
 let pendingStoreIds = new Set();
 
@@ -632,7 +634,7 @@ function syncActiveFiltersUi() {
 
   const count = getActiveFiltersCount();
   filtersActiveSummary.hidden = count === 0;
-  filtersActiveCount.textContent = `${count} active filter${count === 1 ? '' : 's'}`;
+  filtersActiveCount.textContent = String(count);
 }
 
 function clearAllFilters() {
@@ -817,6 +819,52 @@ function getTransparentAwardBadgeSrc(src) {
   return transparentSrcPromise;
 }
 
+function optimizeProductImageSrc(src) {
+  if (!src || !src.includes('images2.giant-bicycles.com/')) {
+    return src;
+  }
+
+  return src.replace(
+    /b_white%2Cc_pad%2Ch_\d+%2Cq_\d+(?:%2Cw_\d+)?/,
+    PRODUCT_TILE_IMAGE_TRANSFORM
+  );
+}
+
+function preloadProductImage(src) {
+  if (!src) {
+    return Promise.resolve(null);
+  }
+
+  if (productImagePreloadCache.has(src)) {
+    return productImagePreloadCache.get(src);
+  }
+
+  const preloadPromise = new Promise((resolve, reject) => {
+    const image = new Image();
+    image.decoding = 'async';
+
+    image.addEventListener('load', () => {
+      resolve(src);
+    }, { once: true });
+
+    image.addEventListener('error', () => {
+      reject(new Error(`Unable to load product image asset: ${src}`));
+    }, { once: true });
+
+    image.src = src;
+
+    if (image.complete && image.naturalWidth > 0) {
+      resolve(src);
+    }
+  }).catch(() => {
+    productImagePreloadCache.delete(src);
+    return null;
+  });
+
+  productImagePreloadCache.set(src, preloadPromise);
+  return preloadPromise;
+}
+
 function hydrateAwardBadges() {
   const badges = Array.from(document.querySelectorAll('.award-badge'));
 
@@ -833,9 +881,22 @@ function hydrateAwardBadges() {
   });
 }
 
+function warmProductTileImages(products = bikesProducts) {
+  products.forEach((product) => {
+    product.colors.forEach((color) => {
+      color.images.forEach((src) => {
+        const optimizedSrc = optimizeProductImageSrc(src);
+        if (optimizedSrc) {
+          void preloadProductImage(optimizedSrc);
+        }
+      });
+    });
+  });
+}
+
 function createCard(product) {
   const article = document.createElement('article');
-  article.className = 'product-card has-hover-media';
+  article.className = 'product-card';
   article.dataset.productId = product.id;
   article.setAttribute('aria-label', `${product.title} product tile`);
 
@@ -881,23 +942,50 @@ function createCard(product) {
   const selectorGroup = article.querySelector('.selector-group');
   const mainImage = article.querySelector('.product-card__image');
   const hoverImage = article.querySelector('.product-card__hover-image');
+  let hoverImageRequestId = 0;
+
+  async function syncHoverImage(src, alt) {
+    const requestId = ++hoverImageRequestId;
+
+    article.classList.remove('has-hover-media');
+    hoverImage.removeAttribute('src');
+    hoverImage.alt = '';
+
+    if (!src) {
+      return;
+    }
+
+    const loadedSrc = await preloadProductImage(src);
+
+    if (requestId !== hoverImageRequestId || loadedSrc !== src) {
+      return;
+    }
+
+    hoverImage.src = loadedSrc;
+    hoverImage.alt = alt;
+
+    if (typeof hoverImage.decode === 'function') {
+      try {
+        await hoverImage.decode();
+      } catch {
+        // Continue with the loaded asset even when decode is unavailable.
+      }
+    }
+
+    if (requestId !== hoverImageRequestId) {
+      return;
+    }
+
+    article.classList.add('has-hover-media');
+  }
 
   function applySelection(optionKey) {
     const selectedEntry = product.colors.find((entry) => entry.key === optionKey) || product.colors[0];
-    const [primaryImage, secondaryImage] = selectedEntry.images;
+    const [primaryImage, secondaryImage] = selectedEntry.images.map(optimizeProductImageSrc);
 
     mainImage.src = primaryImage;
     mainImage.alt = `${product.title} in ${selectedEntry.label}`;
-
-    if (secondaryImage) {
-      hoverImage.src = secondaryImage;
-      hoverImage.alt = `${product.title} alternate view in ${selectedEntry.label}`;
-      article.classList.add('has-hover-media');
-    } else {
-      hoverImage.removeAttribute('src');
-      hoverImage.alt = '';
-      article.classList.remove('has-hover-media');
-    }
+    void syncHoverImage(secondaryImage, `${product.title} alternate view in ${selectedEntry.label}`);
 
     selectorGroup.querySelectorAll('button').forEach((button) => {
       const isSelected = button.dataset.option === selectedEntry.key;
@@ -1082,6 +1170,7 @@ function renderCatalog() {
     }
   });
 
+  warmProductTileImages(visibleProducts);
   row.innerHTML = '';
   visibleProducts.forEach((product) => {
     row.appendChild(createCard(product));
