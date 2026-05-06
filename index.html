@@ -114,6 +114,14 @@
 
       <section class="search-page__content" id="search-content">
         <aside class="filters-panel" id="filters-panel" aria-label="Product filters">
+          <div class="filters-panel__drawer-header">
+            <h2 class="filters-panel__drawer-title" id="filters-drawer-title">Filters</h2>
+            <button class="filters-panel__drawer-close" id="filters-drawer-close" type="button" aria-label="Close filters">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
           <div class="filters-panel__groups">
 
           <!-- Availability: near me (toggle + distance) -->
@@ -522,6 +530,9 @@
           </section>
 
           </div>
+          <div class="filters-panel__drawer-footer">
+            <button class="filters-panel__apply" id="filters-drawer-apply" type="button">Apply</button>
+          </div>
 
         </aside>
 
@@ -535,6 +546,7 @@
       </section>
     </main>
 
+    <div class="filters-drawer-backdrop" id="filters-drawer-backdrop" hidden></div>
     <!-- Stores in range modal -->
     <div class="modal-overlay" id="stores-range-overlay" role="dialog" aria-modal="true" aria-labelledby="stores-range-title" hidden>
       <div class="store-modal">

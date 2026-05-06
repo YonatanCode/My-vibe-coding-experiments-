@@ -270,6 +270,9 @@ const filtersToggleLabel = document.getElementById('filters-toggle-label');
 const filtersActiveSummary = document.getElementById('filters-active-summary');
 const filtersActiveCount = document.getElementById('filters-active-count');
 const clearFiltersButton = document.getElementById('clear-filters');
+const filtersDrawerBackdrop = document.getElementById('filters-drawer-backdrop');
+const filtersDrawerCloseButton = document.getElementById('filters-drawer-close');
+const filtersDrawerApplyButton = document.getElementById('filters-drawer-apply');
 const availabilityToggle = document.getElementById('availability-toggle');
 const availabilityFilterGroup = availabilityToggle?.closest('.filter-group--availability');
 const availabilityDetails = document.getElementById('availability-details');
@@ -305,6 +308,7 @@ const _productPrices = bikesProducts.map(p => parseCurrencyAmount(p.price.amount
 const PRICE_MIN = _productPrices.length ? Math.floor(Math.min(..._productPrices) / PRICE_STEP) * PRICE_STEP : 0;
 const PRICE_MAX = _productPrices.length ? Math.ceil(Math.max(..._productPrices) / PRICE_STEP) * PRICE_STEP : 10000;
 const TOUCH_QUERY = '(hover: none), (pointer: coarse)';
+const MOBILE_FILTERS_DRAWER_QUERY = '(max-width: 1199px)';
 const DESKTOP_SPLIT_SCROLL_QUERY = '(min-width: 1200px)';
 const PRICE_DISCLAIMER = '0% APR Finance';
 const AWARD_BADGE_WHITE_THRESHOLD = 232;
@@ -312,6 +316,7 @@ const AWARD_BADGE_NEUTRAL_TOLERANCE = 16;
 const MIN_SPLIT_SCROLL_HEIGHT = 320;
 const STICKY_SCROLL_TOLERANCE = 12;
 const PRODUCT_TILE_IMAGE_TRANSFORM = 'b_white%2Cc_pad%2Ch_600%2Cq_80%2Cw_800';
+const mobileFiltersDrawerQuery = window.matchMedia(MOBILE_FILTERS_DRAWER_QUERY);
 const desktopSplitScrollQuery = window.matchMedia(DESKTOP_SPLIT_SCROLL_QUERY);
 const compareSelection = new Set();
 const transparentAwardBadgeCache = new Map();
@@ -374,7 +379,8 @@ const getProductsAreaWheelPlan = scrollBehaviorLogic.getProductsAreaWheelPlan ||
 });
 
 const state = {
-  filtersVisible: true,
+  filtersVisible: !mobileFiltersDrawerQuery.matches,
+  desktopFiltersVisible: true,
   availabilityOnly: false,
   storeAvailabilityEnabled: false,
   locationQuery: locationInput.value,
@@ -384,9 +390,16 @@ const state = {
   priceMin: null,
   priceMax: null
 };
+let appliedFiltersSnapshot = null;
+let mobileDrawerInitialSnapshot = null;
+let wasMobileFiltersDrawerMode = mobileFiltersDrawerQuery.matches;
 
 function isTouchInteractionMode() {
   return window.matchMedia(TOUCH_QUERY).matches;
+}
+
+function isMobileFiltersDrawerMode() {
+  return mobileFiltersDrawerQuery.matches;
 }
 
 function isDesktopSplitScrollActive() {
@@ -415,6 +428,25 @@ function updateSplitScrollLayout() {
   searchContent.style.setProperty('--Search-Content-Height', `${nextHeight}px`);
 }
 
+function getFiltersContentHeight() {
+  if (!filtersPanelGroups) {
+    return filtersPanel?.scrollHeight ?? 0;
+  }
+
+  const lastGroup = filtersPanelGroups.lastElementChild;
+
+  if (!(lastGroup instanceof HTMLElement)) {
+    return 0;
+  }
+
+  const groupsRect = filtersPanelGroups.getBoundingClientRect();
+  const lastGroupRect = lastGroup.getBoundingClientRect();
+  const groupsStyles = window.getComputedStyle(filtersPanelGroups);
+  const paddingBottom = Number.parseFloat(groupsStyles.paddingBottom) || 0;
+
+  return Math.ceil(lastGroupRect.bottom - groupsRect.top + filtersPanelGroups.scrollTop + paddingBottom);
+}
+
 function updateFiltersStickyState() {
   if (!filtersPanel) {
     return;
@@ -423,17 +455,19 @@ function updateFiltersStickyState() {
   if (!isDesktopSplitScrollActive() || !state.filtersVisible) {
     filtersPanel.classList.remove('filters-panel--desktop-sticky');
     filtersPanel.classList.remove('filters-panel--desktop-scroll');
+    filtersPanel.style.removeProperty('--Filters-Viewport-Height');
     return;
   }
 
   const stickyOffset = getFiltersStickyOffset();
   const availableViewportHeight = Math.max(0, window.innerHeight - stickyOffset);
-  const panelHeight = filtersPanel.scrollHeight;
+  const panelHeight = getFiltersContentHeight();
   const isAlreadyScrollable = filtersPanel.classList.contains('filters-panel--desktop-scroll');
   const needsScrollableStickyContent = isAlreadyScrollable
     ? panelHeight > availableViewportHeight - STICKY_SCROLL_TOLERANCE
     : panelHeight > availableViewportHeight + STICKY_SCROLL_TOLERANCE;
 
+  filtersPanel.style.setProperty('--Filters-Viewport-Height', `${availableViewportHeight}px`);
   filtersPanel.classList.add('filters-panel--desktop-sticky');
   filtersPanel.classList.toggle('filters-panel--desktop-scroll', needsScrollableStickyContent);
 }
@@ -802,6 +836,204 @@ function syncActiveFiltersUi() {
   filtersActiveCount.textContent = String(count);
 }
 
+function getFilterCheckboxStates() {
+  if (!filtersPanel) {
+    return {};
+  }
+
+  return Array.from(filtersPanel.querySelectorAll('input[type="checkbox"]')).reduce((states, input) => {
+    if (input.id) {
+      states[input.id] = input.checked;
+    }
+
+    return states;
+  }, {});
+}
+
+function cloneFiltersSnapshot(snapshot) {
+  if (!snapshot) {
+    return null;
+  }
+
+  return {
+    checkboxStates: { ...snapshot.checkboxStates },
+    availabilityOnly: snapshot.availabilityOnly,
+    storeAvailabilityEnabled: snapshot.storeAvailabilityEnabled,
+    locationQuery: snapshot.locationQuery,
+    selectedLocation: snapshot.selectedLocation,
+    maxDistance: snapshot.maxDistance,
+    priceMin: snapshot.priceMin,
+    priceMax: snapshot.priceMax,
+    selectedStoreId: snapshot.selectedStoreId,
+    selectedStoreLocation: snapshot.selectedStoreLocation,
+    legacySelectedStoreLocation: snapshot.legacySelectedStoreLocation,
+    legacySelectedStoreIds: [...snapshot.legacySelectedStoreIds],
+    legacyPendingStoreIds: [...snapshot.legacyPendingStoreIds],
+    storeModalSelectedLocation: snapshot.storeModalSelectedLocation,
+    storeModalLocationValue: snapshot.storeModalLocationValue
+  };
+}
+
+function createFiltersSnapshot() {
+  return {
+    checkboxStates: getFilterCheckboxStates(),
+    availabilityOnly: state.availabilityOnly,
+    storeAvailabilityEnabled: state.storeAvailabilityEnabled,
+    locationQuery: state.locationQuery,
+    selectedLocation: state.selectedLocation,
+    maxDistance: state.maxDistance,
+    priceMin: state.priceMin,
+    priceMax: state.priceMax,
+    selectedStoreId,
+    selectedStoreLocation,
+    legacySelectedStoreLocation,
+    legacySelectedStoreIds: Array.from(legacySelectedStoreIds),
+    legacyPendingStoreIds: Array.from(legacyPendingStoreIds),
+    storeModalSelectedLocation,
+    storeModalLocationValue: storeModalLocation?.value ?? ''
+  };
+}
+
+function restoreFiltersSnapshot(snapshot, { render = true } = {}) {
+  if (!snapshot || !filtersPanel) {
+    return;
+  }
+
+  const checkboxStates = snapshot.checkboxStates ?? {};
+
+  filtersPanel.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+    if (!input.id) {
+      return;
+    }
+
+    input.checked = Boolean(checkboxStates[input.id]);
+  });
+
+  state.availabilityOnly = Boolean(snapshot.availabilityOnly);
+  state.storeAvailabilityEnabled = Boolean(snapshot.storeAvailabilityEnabled);
+  state.locationQuery = snapshot.locationQuery ?? '';
+  state.selectedLocation = snapshot.selectedLocation ?? '';
+  state.maxDistance = snapshot.maxDistance ?? getAvailabilityDistanceConfig().defaultDistance;
+  state.priceMin = snapshot.priceMin ?? null;
+  state.priceMax = snapshot.priceMax ?? null;
+
+  locationInput.value = state.locationQuery;
+  locationSuggestions.hidden = true;
+  locationSuggestions.innerHTML = '';
+  locationInput.removeAttribute('aria-activedescendant');
+  activeSuggestionIndex = -1;
+
+  selectedStoreId = snapshot.selectedStoreId ?? '';
+  selectedStoreLocation = snapshot.selectedStoreLocation ?? '';
+  legacySelectedStoreLocation = snapshot.legacySelectedStoreLocation ?? '';
+  legacySelectedStoreIds = new Set(snapshot.legacySelectedStoreIds ?? []);
+  legacyPendingStoreIds = new Set(snapshot.legacyPendingStoreIds ?? []);
+  storeModalSelectedLocation = snapshot.storeModalSelectedLocation ?? '';
+  activeStoreModalSuggestionIndex = -1;
+
+  if (storeModalLocation) {
+    storeModalLocation.value = snapshot.storeModalLocationValue ?? '';
+    storeModalLocation.removeAttribute('aria-activedescendant');
+  }
+
+  if (storeModalSuggestions) {
+    storeModalSuggestions.hidden = true;
+    storeModalSuggestions.innerHTML = '';
+  }
+
+  if (storeModalList) {
+    storeModalList.hidden = true;
+    storeModalList.innerHTML = '';
+  }
+
+  setStoreModalHelperText('Enter a postcode, city or address to choose a store.');
+  renderLegacyStorePills();
+  updateLegacyStoresLabel();
+  syncStoreAvailabilityUi();
+  syncPriceRangeUi();
+  syncFilterUi();
+
+  if (render) {
+    renderCatalog();
+  }
+}
+
+function syncBodyScrollLock() {
+  const isStoreModalOpen = Boolean(storeModalOverlay && !storeModalOverlay.hidden);
+  const isStoresRangeModalOpen = Boolean(storesRangeOverlay && !storesRangeOverlay.hidden);
+  const isFiltersDrawerOpen = isMobileFiltersDrawerMode() && state.filtersVisible;
+  document.body.classList.toggle('body--scroll-locked', isFiltersDrawerOpen || isStoreModalOpen || isStoresRangeModalOpen);
+}
+
+function requestCatalogRefresh() {
+  if (isMobileFiltersDrawerMode() && state.filtersVisible) {
+    return;
+  }
+
+  appliedFiltersSnapshot = createFiltersSnapshot();
+  renderCatalog();
+}
+
+function openFiltersDrawer() {
+  mobileDrawerInitialSnapshot = cloneFiltersSnapshot(appliedFiltersSnapshot ?? createFiltersSnapshot());
+  state.filtersVisible = true;
+  syncFilterUi();
+
+  requestAnimationFrame(() => {
+    filtersDrawerCloseButton?.focus();
+  });
+}
+
+function closeFiltersDrawer({ restoreApplied = false, focusTrigger = false } = {}) {
+  if (restoreApplied && mobileDrawerInitialSnapshot) {
+    restoreFiltersSnapshot(mobileDrawerInitialSnapshot, { render: false });
+  }
+
+  state.filtersVisible = false;
+  mobileDrawerInitialSnapshot = null;
+  syncFilterUi();
+
+  if (restoreApplied) {
+    renderCatalog();
+  }
+
+  if (focusTrigger) {
+    requestAnimationFrame(() => {
+      filtersToggleButton?.focus();
+    });
+  }
+}
+
+function applyMobileFilters() {
+  appliedFiltersSnapshot = createFiltersSnapshot();
+  state.filtersVisible = false;
+  mobileDrawerInitialSnapshot = null;
+  syncFilterUi();
+  renderCatalog();
+
+  requestAnimationFrame(() => {
+    filtersToggleButton?.focus();
+  });
+}
+
+function syncResponsiveFiltersMode() {
+  const isMobileDrawerMode = isMobileFiltersDrawerMode();
+
+  if (isMobileDrawerMode) {
+    state.filtersVisible = false;
+  } else {
+    if (wasMobileFiltersDrawerMode && mobileDrawerInitialSnapshot) {
+      restoreFiltersSnapshot(mobileDrawerInitialSnapshot, { render: false });
+      mobileDrawerInitialSnapshot = null;
+    }
+
+    state.filtersVisible = state.desktopFiltersVisible;
+  }
+
+  wasMobileFiltersDrawerMode = isMobileDrawerMode;
+  syncFilterUi();
+}
+
 function clearAllFilters() {
   if (!filtersPanel) {
     return;
@@ -855,7 +1087,7 @@ function clearAllFilters() {
   syncStoreAvailabilityUi();
   syncPriceRangeUi();
   syncFilterUi();
-  renderCatalog();
+  requestCatalogRefresh();
 }
 
 function getDiscountPercentage(price) {
@@ -1395,6 +1627,8 @@ function syncFilterUi() {
   } else {
     locationInput.removeAttribute('aria-describedby');
   }
+
+  const isMobileDrawerMode = isMobileFiltersDrawerMode();
   const filtersAreHidden = !state.filtersVisible;
 
   if (filtersAreHidden && filtersPanel.contains(document.activeElement)) {
@@ -1403,9 +1637,24 @@ function syncFilterUi() {
 
   filtersToggleLabel.textContent = state.filtersVisible ? 'Hide filters' : 'Show filters';
   filtersToggleButton.setAttribute('aria-pressed', String(state.filtersVisible));
-  searchContent.classList.toggle('search-page__content--filters-hidden', filtersAreHidden);
+  searchContent.classList.toggle('search-page__content--filters-hidden', !isMobileDrawerMode && filtersAreHidden);
+  filtersPanel.classList.toggle('filters-panel--drawer-open', isMobileDrawerMode && state.filtersVisible);
+
+  if (isMobileDrawerMode) {
+    filtersPanel.setAttribute('role', 'dialog');
+    filtersPanel.setAttribute('aria-modal', 'true');
+    filtersPanel.setAttribute('aria-labelledby', 'filters-drawer-title');
+    filtersDrawerBackdrop.hidden = !state.filtersVisible;
+  } else {
+    filtersPanel.removeAttribute('role');
+    filtersPanel.removeAttribute('aria-modal');
+    filtersPanel.removeAttribute('aria-labelledby');
+    filtersDrawerBackdrop.hidden = true;
+  }
+
   filtersPanel.setAttribute('aria-hidden', String(filtersAreHidden));
   filtersPanel.inert = filtersAreHidden;
+  syncBodyScrollLock();
   scheduleFiltersStickyRefresh();
   syncActiveFiltersUi();
 }
@@ -1474,13 +1723,13 @@ availabilityToggle.addEventListener('change', () => {
       }
     });
   }
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 storeAvailabilityToggle.addEventListener('change', () => {
   state.storeAvailabilityEnabled = storeAvailabilityToggle.checked && selectedStoreId.length > 0;
   syncStoreAvailabilityUi();
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 // ─── Location suggestions ──────────────────────────────────────────────────
@@ -1570,7 +1819,7 @@ function selectLocationSuggestion(value) {
     initializeAvailabilityDistance();
   }
   syncFilterUi();
-  renderCatalog();
+  requestCatalogRefresh();
 }
 
 function updateActiveSuggestion(index) {
@@ -1595,7 +1844,7 @@ locationInput.addEventListener('input', () => {
 
   renderLocationSuggestions();
   syncFilterUi();
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 locationInput.addEventListener('keydown', (event) => {
@@ -1636,7 +1885,7 @@ distanceRange.addEventListener('input', () => {
 
   state.maxDistance = distanceOptions[distanceIndex] ?? AVAILABILITY_DISTANCE_MIN;
   syncFilterUi();
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 let rangeDragging = false;
@@ -1675,7 +1924,7 @@ priceRangeMinInput.addEventListener('input', () => {
   }
   state.priceMin = newMin <= PRICE_MIN ? null : newMin;
   syncPriceRangeUi();
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 priceRangeMaxInput.addEventListener('input', () => {
@@ -1687,7 +1936,7 @@ priceRangeMaxInput.addEventListener('input', () => {
   }
   state.priceMax = newMax >= PRICE_MAX ? null : newMax;
   syncPriceRangeUi();
-  renderCatalog();
+  requestCatalogRefresh();
 });
 
 const SORT_LABELS = {
@@ -1751,8 +2000,18 @@ filtersPanel.addEventListener('change', (event) => {
 clearFiltersButton.addEventListener('click', clearAllFilters);
 
 filtersToggleButton.addEventListener('click', () => {
-  state.filtersVisible = !state.filtersVisible;
-  syncFilterUi();
+  if (isMobileFiltersDrawerMode()) {
+    if (state.filtersVisible) {
+      closeFiltersDrawer({ restoreApplied: true, focusTrigger: true });
+    } else {
+      openFiltersDrawer();
+    }
+  } else {
+    state.desktopFiltersVisible = !state.desktopFiltersVisible;
+    state.filtersVisible = state.desktopFiltersVisible;
+    syncFilterUi();
+  }
+
   updateTooltipEdgeAlignment();
 });
 
@@ -2024,7 +2283,7 @@ function openStoreModal(mode = 'single') {
   }
 
   storeModalOverlay.hidden = false;
-  document.body.style.overflow = 'hidden';
+  syncBodyScrollLock();
   storeModalLocation.focus();
   renderStoreModalSuggestions();
   renderStoreModalList();
@@ -2032,7 +2291,7 @@ function openStoreModal(mode = 'single') {
 
 function closeStoreModal() {
   storeModalOverlay.hidden = true;
-  document.body.style.overflow = '';
+  syncBodyScrollLock();
   storeModalSuggestions.hidden = true;
   storeModalSuggestions.innerHTML = '';
   storeModalLocation.removeAttribute('aria-activedescendant');
@@ -2191,7 +2450,7 @@ function applyStoreSelection(storeId, locationLabel) {
   state.storeAvailabilityEnabled = true;
   syncStoreAvailabilityUi();
   closeStoreModal();
-  renderCatalog();
+  requestCatalogRefresh();
 }
 
 function applyLegacyStoreSelection() {
@@ -2205,13 +2464,20 @@ function applyLegacyStoreSelection() {
   renderLegacyStorePills();
   updateLegacyStoresLabel();
   closeStoreModal();
-  renderCatalog();
+  requestCatalogRefresh();
 }
 
 openStoreModalBtn.addEventListener('click', () => openStoreModal('single'));
 legacyOpenStoreModalBtn?.addEventListener('click', () => openStoreModal('legacy'));
 storeModalClose.addEventListener('click', closeStoreModal);
 storeModalApply?.addEventListener('click', applyLegacyStoreSelection);
+filtersDrawerCloseButton?.addEventListener('click', () => {
+  closeFiltersDrawer({ restoreApplied: true, focusTrigger: true });
+});
+filtersDrawerApplyButton?.addEventListener('click', applyMobileFilters);
+filtersDrawerBackdrop?.addEventListener('click', () => {
+  closeFiltersDrawer({ restoreApplied: true, focusTrigger: true });
+});
 storeModalLocation.addEventListener('input', () => {
   const normalizedSelectedLocation = storeModalSelectedLocation.toLowerCase();
 
@@ -2282,8 +2548,21 @@ storeModalOverlay.addEventListener('click', (event) => {
 });
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && !storeModalOverlay.hidden) closeStoreModal();
-  if (event.key === 'Escape' && !storesRangeOverlay.hidden) closeStoresRangeModal();
+  if (event.key === 'Escape' && !storeModalOverlay.hidden) {
+    closeStoreModal();
+    return;
+  }
+
+  if (event.key === 'Escape' && !storesRangeOverlay.hidden) {
+    closeStoresRangeModal();
+    return;
+  }
+
+  if (event.key === 'Escape' && isMobileFiltersDrawerMode() && state.filtersVisible) {
+    closeFiltersDrawer({ restoreApplied: true, focusTrigger: true });
+    return;
+  }
+
   if (event.key === 'Escape' && !sortDropdown.hidden) {
     closeSortDropdown();
     sortTrigger.focus();
@@ -2315,13 +2594,13 @@ function openStoresRangeModal() {
       `).join('')
     : `<p style="color: var(--Contrast-Variant); font-size: var(--Font-Size-Body-S);">No stores found within this range.</p>`;
   storesRangeOverlay.hidden = false;
-  document.body.style.overflow = 'hidden';
+  syncBodyScrollLock();
   storesRangeClose.focus();
 }
 
 function closeStoresRangeModal() {
   storesRangeOverlay.hidden = true;
-  document.body.style.overflow = '';
+  syncBodyScrollLock();
 }
 
 showStoresInRangeBtn.addEventListener('click', openStoresRangeModal);
@@ -2329,6 +2608,7 @@ storesRangeClose.addEventListener('click', closeStoresRangeModal);
 storesRangeOverlay.addEventListener('click', (event) => {
   if (event.target === storesRangeOverlay) closeStoresRangeModal();
 });
+mobileFiltersDrawerQuery.addEventListener('change', syncResponsiveFiltersMode);
 
 updateLegacyStoresLabel();
 renderLegacyStorePills();
@@ -2336,5 +2616,7 @@ syncStoreAvailabilityUi();
 syncFilterUi();
 syncPriceRangeUi();
 renderCatalog();
+appliedFiltersSnapshot = createFiltersSnapshot();
+syncResponsiveFiltersMode();
 initializeFilterGroups();
 initializeHybridScroll();
